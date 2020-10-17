@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/SDM/App/static/css/main.5f361e03.chunk.css",
+    "main.js": "/SDM/App/static/js/main.acd8a135.chunk.js",
+    "main.js.map": "/SDM/App/static/js/main.acd8a135.chunk.js.map",
+    "runtime-main.js": "/SDM/App/static/js/runtime-main.fdeb9eb7.js",
+    "runtime-main.js.map": "/SDM/App/static/js/runtime-main.fdeb9eb7.js.map",
+    "static/js/2.70742dab.chunk.js": "/SDM/App/static/js/2.70742dab.chunk.js",
+    "static/js/2.70742dab.chunk.js.map": "/SDM/App/static/js/2.70742dab.chunk.js.map",
+    "index.html": "/SDM/App/index.html",
+    "precache-manifest.ba81472e1261fdfda8e2e38e880abf36.js": "/SDM/App/precache-manifest.ba81472e1261fdfda8e2e38e880abf36.js",
+    "service-worker.js": "/SDM/App/service-worker.js",
+    "static/css/main.5f361e03.chunk.css.map": "/SDM/App/static/css/main.5f361e03.chunk.css.map",
+    "static/js/2.70742dab.chunk.js.LICENSE.txt": "/SDM/App/static/js/2.70742dab.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/SDM/App/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fdeb9eb7.js",
+    "static/js/2.70742dab.chunk.js",
+    "static/css/main.5f361e03.chunk.css",
+    "static/js/main.acd8a135.chunk.js"
+  ]
+}
