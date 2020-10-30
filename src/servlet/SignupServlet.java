@@ -19,7 +19,7 @@ import servlet.util.*;
 public class SignupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        String username = body.get("username").getAsString();
+        String username = body.get("userName").getAsString();
         String password = body.get("password").getAsString();
         String role = body.get("role").getAsString();
         // TODO: parse to userDTO (via Gson) & add signed up user
