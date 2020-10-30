@@ -1,7 +1,7 @@
 package servlet.pojo;
 
 public class AreaDTO {
-    String areadId;
+    String id;
     String name;
     String owner;
     int totalProducts;
@@ -9,7 +9,7 @@ public class AreaDTO {
     int totalOrders;
     double avgOrderCost;
 
-    public AreaDTO(String areadId,String name, String owner, int totalProducts, int totalStores, int totalOrders, double avgOrderCost) {
+    public AreaDTO(String id,String name, String owner, int totalProducts, int totalStores, int totalOrders, double avgOrderCost) {
         this.name = name;
         this.owner = owner;
         this.totalProducts = totalProducts;
