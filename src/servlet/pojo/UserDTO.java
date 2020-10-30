@@ -1,10 +1,10 @@
 package servlet.pojo;
 
-public class User {
+public class UserDTO {
     String role;
     String name;
 
-    public User(String role, String name) {
+    public UserDTO(String role, String name) {
         this.role = role;
         this.name = name;
     }
