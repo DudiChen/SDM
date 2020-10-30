@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <servlet>
-        <servlet-name>JAXApplication</servlet-name>
+        <servlet-name>Balance</servlet-name>
         <servlet-class>servlet.LoginServlet</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
@@ -18,7 +18,7 @@
     </servlet>
 
         <servlet-mapping>
-            <servlet-name>JAXApplication</servlet-name>
+            <servlet-name>LoginServlet</servlet-name>
             <url-pattern>/*</url-pattern>
         </servlet-mapping>
 
