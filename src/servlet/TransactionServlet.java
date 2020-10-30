@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import servlet.pojo.Transaction;
+import servlet.pojo.TransactionDTO;
 import servlet.util.ServletUtils;
 
 import javax.servlet.ServletException;
@@ -44,9 +44,9 @@ public class TransactionServlet extends HttpServlet {
         // Dummy:
         String reply = "";
         if (uuid.equals("111")) {
-            Transaction transaction1 = new Transaction("income", new Date(), 2, 1, 3);
-            Transaction transaction2 = new Transaction("payment", new Date(), 2, 3, 1);
-            List<Transaction> transactionList = Arrays.asList(transaction1, transaction2);
+            TransactionDTO transaction1 = new TransactionDTO("income", new Date(), 2, 1, 3);
+            TransactionDTO transaction2 = new TransactionDTO("payment", new Date(), 2, 3, 1);
+            List<TransactionDTO> transactionList = Arrays.asList(transaction1, transaction2);
             Gson gson = new Gson();
 //        Type transactionListType = new TypeToken<ArrayList<Transaction>>(){}.getType();
             JsonElement temp = gson.toJsonTree(transactionList);
