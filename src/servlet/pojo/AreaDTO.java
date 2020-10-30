@@ -10,6 +10,7 @@ public class AreaDTO {
     double avgOrderCost;
 
     public AreaDTO(String id,String name, String owner, int totalProducts, int totalStores, int totalOrders, double avgOrderCost) {
+        this.id = id;
         this.name = name;
         this.owner = owner;
         this.totalProducts = totalProducts;
