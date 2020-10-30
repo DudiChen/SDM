@@ -8,4 +8,12 @@ public class Transaction {
     int amount;
     int balanceBefore;
     int balanceAfter;
+
+    public Transaction(String type, Date date, int amount, int balanceBefore, int balanceAfter) {
+        this.type = type;
+        this.date = date;
+        this.amount = amount;
+        this.balanceBefore = balanceBefore;
+        this.balanceAfter = balanceAfter;
+    }
 }
