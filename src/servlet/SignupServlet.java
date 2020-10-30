@@ -23,10 +23,10 @@ public class SignupServlet extends HttpServlet {
         String password = body.get("password").getAsString();
         String role = body.get("role").getAsString();
         // TODO: parse to userDTO (via Gson) & add signed up user
-        JsonObject reply = new JsonObject();
-        reply.addProperty("role", role);
-        response.getWriter().write(reply.toString());
-        response.getWriter().close();
+//        JsonObject reply = new JsonObject();
+//        reply.addProperty("role", role);
+//        response.getWriter().write(reply.toString());
+//        response.getWriter().close();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

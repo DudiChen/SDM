@@ -18,7 +18,9 @@ public class LoginServlet extends HttpServlet {
         // Dummy:
         JsonObject reply = new JsonObject();
         reply.addProperty("role", "consumer");
-        response.getWriter().write(reply.toString());
+        reply.addProperty("ssid", "aaa");
+        reply.addProperty("uuid", "111");
+        response.getWriter().write(String.valueOf(reply));
         response.getWriter().close();
     }
 

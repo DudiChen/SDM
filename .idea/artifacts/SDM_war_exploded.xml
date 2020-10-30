@@ -8,7 +8,6 @@
           <element id="module-output" name="SDM" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="javax.ws.rs-api-2.0.1" />
           <element id="library" level="project" name="gson-2.1" />
         </element>
       </element>

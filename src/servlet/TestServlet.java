@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "TestServlet", urlPatterns = {"/api/test"})
+@WebServlet(name = "TestServlet")
 public class TestServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("hello, this is supposed to be a json server !");
-    }
+//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//
+//    }
+//
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        response.getWriter().write("hello, this is supposed to be a json server !");
+//    }
 }
