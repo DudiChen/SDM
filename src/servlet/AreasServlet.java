@@ -29,8 +29,8 @@ public class AreasServlet extends HttpServlet {
         Gson gson = new Gson();
 
         List<AreaDTO> areasList = Arrays.asList(
-                new AreaDTO("Shenkin", "Noam", 30, 3, 300, 150.0),
-                new AreaDTO("Dizingoff", "Dudi", 10, 1, 100, 40.0)
+                new AreaDTO("1", "Shenkin", "Noam", 30, 3, 300, 150.0),
+                new AreaDTO("2", "Dizingoff", "Dudi", 10, 1, 100, 40.0)
         );
         JsonArray areasJSON = gson.toJsonTree(areasList).getAsJsonArray();
         reply.add("allAreas", areasJSON);
