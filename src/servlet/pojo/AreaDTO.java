@@ -6,9 +6,9 @@ public class AreaDTO {
     int totalProducts;
     int totalStores;
     int totalOrders;
-    int avgOrderCost;
+    double avgOrderCost;
 
-    public AreaDTO(String name, String owner, int totalProducts, int totalStores, int totalOrders, int avgOrderCost) {
+    public AreaDTO(String name, String owner, int totalProducts, int totalStores, int totalOrders, double avgOrderCost) {
         this.name = name;
         this.owner = owner;
         this.totalProducts = totalProducts;

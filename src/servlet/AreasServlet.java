@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import servlet.pojo.AreaDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +27,11 @@ public class AreasServlet extends HttpServlet {
         // TODO: fetch all areas list
         // Dummy:
         Gson gson = new Gson();
-        List<String> areasList = Arrays.asList("Tel Aviv", "Natanya");
+
+        List<AreaDTO> areasList = Arrays.asList(
+                new AreaDTO("Shenkin", "Noam", 30, 3, 300, 150.0),
+                new AreaDTO("Dizingoff", "Dudi", 10, 1, 100, 40.0)
+        );
         JsonArray areasJSON = gson.toJsonTree(areasList).getAsJsonArray();
         reply.add("allAreas", areasJSON);
         response.getWriter().write(String.valueOf(reply));
