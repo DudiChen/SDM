@@ -3,6 +3,7 @@ package servlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import servlet.pojo.UserDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,9 +24,11 @@ public class UsersServlet extends HttpServlet {
         JsonObject reply = new JsonObject();
         // TODO: fetch all users list
         // Dummy:
+        UserDTO user1 = new UserDTO("consumer", "dudi");
+        UserDTO user2 = new UserDTO("seller", "noam");
         Gson gson = new Gson();
-        List<String> areasList = Arrays.asList("dudi", "noam");
-        JsonArray usersJSON = gson.toJsonTree(areasList).getAsJsonArray();
+        List<UserDTO> usersList = Arrays.asList(user1, user2);
+        JsonArray usersJSON = gson.toJsonTree(usersList).getAsJsonArray();
         reply.add("allUsers", usersJSON);
         response.getWriter().write(String.valueOf(reply));
         response.getWriter().close();

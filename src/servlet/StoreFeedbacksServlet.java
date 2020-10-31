@@ -40,7 +40,7 @@ public class StoreFeedbacksServlet extends HttpServlet {
         // TODO: fetch all stores in area according to areaId
         // Dummy:
         String reply = "";
-        if (areaId.equals("1") && storeId.equals("1")) {
+        if (areaId.equals("111") && storeId.equals("1")) {
             StoreFeedbackDTO storeFeedback1 = new StoreFeedbackDTO("Menashe", "Wallak sababa", 4);
             StoreFeedbackDTO storeFeedback2 = new StoreFeedbackDTO("Shirli", "kaka", 2);
             List<StoreFeedbackDTO> feedbacksList = Arrays.asList(storeFeedback1, storeFeedback2);
