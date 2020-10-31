@@ -19,10 +19,13 @@ import java.util.List;
 @WebServlet(name = "StoreFeedbacksServlet", urlPatterns = {"/api/areas/stores/feedbacks"})
 public class StoreFeedbacksServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String storeId = request.getParameter("storeId");
-        String uuid = request.getParameter("uuid");
+//        String areaId = request.getParameter("areaId");
+//        String storeId = request.getParameter("storeId");
+//        String uuid = request.getParameter("uuid");
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
+        String uuid = body.get("uuid").getAsString();
         int rating = body.get("rating").getAsInt();
         String text = body.get("text").getAsString();
         // String customerName = <function that gets customer name by uuid>
@@ -33,9 +36,12 @@ public class StoreFeedbacksServlet extends HttpServlet {
         response.getWriter().close();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String storeId = request.getParameter("storeId");
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+//        String areaId = request.getParameter("areaId");
+//        String storeId = request.getParameter("storeId");
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
 
         // TODO: fetch all stores in area according to areaId
         // Dummy:
