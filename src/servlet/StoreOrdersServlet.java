@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import servlet.pojo.ProductInAreaDTO;
 import servlet.pojo.StoreDTO;
 import servlet.pojo.StoreOrderDTO;
 import servlet.util.ServletUtils;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @WebServlet(name = "StoreOrdersServlet", urlPatterns = {"/api/areas/stores/orders"})
@@ -38,18 +40,19 @@ public class StoreOrdersServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String areaId = request.getParameter("areaId");
-        // TODO: fetch all stores in area according to areaId
+        String storeId = request.getParameter("areaId");
+        // TODO: fetch all orders of store in area according to areaId & store
         // Dummy:
         String reply = "";
-        if (areaId.equals("1")) {
-            StoreDTO store1 = new StoreDTO("Rami", "1", "Reoma", 20, 2000.0, 20.0,5);
-            StoreDTO store2 = new StoreDTO("Sefa", "2", "Ramzi", 25, 2500.0, 25.0,10);
-            List<StoreDTO> storesList = Arrays.asList(store1, store2);
+        if (areaId.equals("111")) {
+            StoreOrderDTO order1 = new StoreOrderDTO("Yemima", "1", new Date(), 15, 200.0, 7.0);
+            StoreOrderDTO order2 = new StoreOrderDTO("Charlie", "1", new Date(), 22, 222.0, 2.0);
+            List<StoreOrderDTO> ordersList = Arrays.asList(order1, order2);
             Gson gson = new Gson();
-            JsonElement temp = gson.toJsonTree(storesList);
-            JsonArray storesListJSON = temp.getAsJsonArray();
+            JsonElement temp = gson.toJsonTree(ordersList);
+            JsonArray ordersListJSON = temp.getAsJsonArray();
             JsonObject replyJSON = new JsonObject();
-            replyJSON.add("allStores", storesListJSON);
+            replyJSON.add("allOrders", ordersListJSON);
             reply = String.valueOf(replyJSON);
         }
         else {
