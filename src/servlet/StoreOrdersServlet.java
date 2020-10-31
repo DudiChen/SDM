@@ -40,9 +40,13 @@ public class StoreOrdersServlet extends HttpServlet {
         response.getWriter().close();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String storeId = request.getParameter("areaId");
+    //     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String areaId = request.getParameter("areaId");
+//        String storeId = request.getParameter("areaId");
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
         // TODO: fetch all orders of store in area according to areaId & store
         // Dummy:
         String reply = "";
