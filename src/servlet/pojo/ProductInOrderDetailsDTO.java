@@ -4,12 +4,12 @@ public class ProductInOrderDetailsDTO {
     String id;
     String name;
     String purchaseMethod;
-    String purchasedQuantity;
+    double purchasedQuantity;
     double price;
     double totalPrice;
     boolean isPartOfDiscount;
 
-    public ProductInOrderDetailsDTO(String id, String name, String purchaseMethod, String purchasedQuantity, double price, double totalPrice, boolean isPartOfDiscount) {
+    public ProductInOrderDetailsDTO(String id, String name, String purchaseMethod, double purchasedQuantity, double price, double totalPrice, boolean isPartOfDiscount) {
         this.id = id;
         this.name = name;
         this.purchaseMethod = purchaseMethod;
