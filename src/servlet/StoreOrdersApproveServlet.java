@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import controller.Controller;
+import entity.Discount;
 import servlet.pojo.StoreDTO;
 import servlet.pojo.StoreOrderDTO;
 import servlet.util.ServletUtils;
@@ -14,8 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 
 @WebServlet(name = "StoreOrdersApproveServlet", urlPatterns = {"/api/areas/stores/orders/approve"})
 public class StoreOrdersApproveServlet extends HttpServlet {
@@ -25,15 +28,16 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        JsonObject orderJSON = body.get("order").getAsJsonObject();
-        JsonObject discountsJSON = body.get("discounts").getAsJsonObject();
+        String uuid = body.get("uuid").getAsString();
         Gson gson = new Gson();
-        StoreOrderDTO order = gson.fromJson(orderJSON, StoreOrderDTO.class);
-        // TODO: add order and discounts to system
-//        boolean isValid = true;
-//        JsonObject replyJSON = new JsonObject();
-//        replyJSON.addProperty("isValid", isValid);
-//        String reply = String.valueOf(replyJSON.getAsJsonObject());
+
+        Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
+        }.getType();
+        Type productsMapType = new TypeToken<HashMap<String, Integer>() {
+        }.getType();
+        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
+        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
+        Controller.getInstance().approveOrderForStore(uuid, areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity);
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }

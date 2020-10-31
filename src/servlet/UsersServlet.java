@@ -3,6 +3,8 @@ package servlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import controller.Controller;
+import entity.Customer;
 import servlet.pojo.UserDTO;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "UsersServlet", urlPatterns = {"/api/users"})
 public class UsersServlet extends HttpServlet {
@@ -24,11 +27,10 @@ public class UsersServlet extends HttpServlet {
         JsonObject reply = new JsonObject();
         // TODO: fetch all users list
         // Dummy:
-        UserDTO user1 = new UserDTO("consumer", "dudi");
-        UserDTO user2 = new UserDTO("seller", "noam");
+        List<Customer> customers = Controller.getInstance().getAllCustomers();
+        List<UserDTO> userDTOs = customers.stream().map(UserDTO::new).collect(Collectors.toList());
         Gson gson = new Gson();
-        List<UserDTO> usersList = Arrays.asList(user1, user2);
-        JsonArray usersJSON = gson.toJsonTree(usersList).getAsJsonArray();
+        JsonArray usersJSON = gson.toJsonTree(userDTOs).getAsJsonArray();
         reply.add("allUsers", usersJSON);
         response.getWriter().write(String.valueOf(reply));
         response.getWriter().close();

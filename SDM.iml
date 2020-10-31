@@ -23,5 +23,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.5.23" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="gson-2.1" level="project" />
     <orderEntry type="library" name="tomcat-catalina-8.5.51" level="project" />
+    <orderEntry type="module" module-name="Model" />
   </component>
 </module>

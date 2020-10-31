@@ -5,7 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,5 +39,10 @@ public class ServletUtils {
             date = formatter.parse(dateString);
         } catch (ParseException e) {}
         return date;
+    }
+
+    public static File saveFIle(final String base64) {
+        byte[] byteFile = DatatypeConverter.parseBase64Binary(base64);
+        return new File(ServletUtils.class.getProtectionDomain().getCodeSource().getLocation() + "/area.xml");
     }
 }

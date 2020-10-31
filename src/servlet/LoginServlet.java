@@ -8,18 +8,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import controller.Controller;
+import entity.Customer;
 import servlet.util.*;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/api/login"})
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        // TODO: Validate user exists, fetch user role if yes, otherwise update fail status and give message - also add logic in UI
-        // Dummy:
+        String userName = body.get("userName").getAsString();
         JsonObject reply = new JsonObject();
-        reply.addProperty("role", "consumer");
-        reply.addProperty("ssid", "aaa");
-        reply.addProperty("uuid", "111");
+        Customer customer = Controller.getInstance().getCustomerByName(userName);
+        if (customer == null) {
+            reply.addProperty("errorMessage", "user not found");
+        } else {
+
+            String ssid = request.getSession().getId();
+            Controller.addSessionID(ssid, customer.getId());
+            reply.addProperty("role", customer.getRole());
+            reply.addProperty("ssid", ssid);
+            reply.addProperty("uuid", Integer.toString(customer.getId()));
+        }
         response.getWriter().write(String.valueOf(reply));
         response.getWriter().close();
     }

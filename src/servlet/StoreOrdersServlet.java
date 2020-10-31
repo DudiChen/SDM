@@ -4,6 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import controller.Controller;
+import entity.Discount;
+import entity.market.OrderInvoice;
+import servlet.pojo.DiscountDTO;
 import servlet.pojo.ProductInAreaDTO;
 import servlet.pojo.StoreDTO;
 import servlet.pojo.StoreOrderDTO;
@@ -15,10 +20,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+// get available discounts from products and discounts map !
 @WebServlet(name = "StoreOrdersServlet", urlPatterns = {"/api/areas/stores/orders"})
 public class StoreOrdersServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -27,43 +34,48 @@ public class StoreOrdersServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        JsonObject orderJSON = body.get("order").getAsJsonObject();
-        JsonObject discountsJSON = body.get("discounts").getAsJsonObject();
+
+        Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
+        }.getType();
+        Type productsMapType = new TypeToken<HashMap<String, Integer>() {
+        }.getType();
         Gson gson = new Gson();
-        StoreOrderDTO order = gson.fromJson(orderJSON, StoreOrderDTO.class);
-        // TODO: add validation check for the StoreOrder created
-        boolean isValid = true;
+        // maps can be empty
+        // in the first call of a consumer it will defenatly be empty
+        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
+        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
+        List<Discount> availableDiscounts = Controller.getInstance().getAvailableDiscounts(areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity);
         JsonObject replyJSON = new JsonObject();
+        boolean isValid = true;
+        if (availableDiscounts == null) {
+            isValid = false;
+        } else {
+            List<DiscountDTO> availableDiscountDTOs = availableDiscounts.stream().map(DiscountDTO::new).collect(Collectors.toList());
+            String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
+            replyJSON.addProperty("discounts", availableDiscountsStr);
+        }
         replyJSON.addProperty("isValid", isValid);
         String reply = String.valueOf(replyJSON.getAsJsonObject());
         response.getWriter().write(reply);
         response.getWriter().close();
     }
 
-    //     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // get all orders of store for seller
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        String areaId = request.getParameter("areaId");
 //        String storeId = request.getParameter("areaId");
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        // TODO: fetch all orders of store in area according to areaId & store
-        // Dummy:
+        List<OrderInvoice> orderInvoices = Controller.getInstance().getAllOrdersForStore(areaId, storeId);
+        List<StoreOrderDTO> storeOrderDTOs = orderInvoices.stream().map(StoreOrderDTO::new).collect(Collectors.toList());
         String reply = "";
-        if (areaId.equals("111")) {
-            StoreOrderDTO order1 = new StoreOrderDTO("Yemima", "1", new Date(), 15, 200.0, 7.0);
-            StoreOrderDTO order2 = new StoreOrderDTO("Charlie", "1", new Date(), 22, 222.0, 2.0);
-            List<StoreOrderDTO> ordersList = Arrays.asList(order1, order2);
-            Gson gson = new Gson();
-            JsonElement temp = gson.toJsonTree(ordersList);
-            JsonArray ordersListJSON = temp.getAsJsonArray();
-            JsonObject replyJSON = new JsonObject();
-            replyJSON.add("allOrders", ordersListJSON);
-            reply = String.valueOf(replyJSON);
-        }
-        else {
-            reply = "ERROR: area not found!";
-        }
+        Gson gson = new Gson();
+        JsonElement temp = gson.toJsonTree(storeOrderDTOs);
+        JsonArray ordersListJSON = temp.getAsJsonArray();
+        JsonObject replyJSON = new JsonObject();
+        replyJSON.add("allOrders", ordersListJSON);
+        reply = String.valueOf(replyJSON);
         response.getWriter().write(reply);
         response.getWriter().close();
     }

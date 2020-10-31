@@ -2,6 +2,7 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import controller.Controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,19 +18,13 @@ public class BalanceServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String uuid = request.getParameter("uuid");
-        // TODO: fetch balance according to uuid
+        int uuid = Integer.parseInt(request.getParameter("uuid"));
         // Dummy:
         String reply = "";
-        if (uuid.equals("111")) {
-            JsonObject replyJSON = new JsonObject();
-            Gson gson = new Gson();
-            replyJSON.addProperty("balance", 750);
-            reply = String.valueOf(replyJSON);
-        }
-        else {
-            reply = "ERROR: User was not found!";
-        }
+        JsonObject replyJSON = new JsonObject();
+        Gson gson = new Gson();
+        replyJSON.addProperty("balance", Controller.getInstance().getBalanceByCustomerId(uuid);
+        reply = String.valueOf(replyJSON);
         response.getWriter().write(reply);
         response.getWriter().close();
     }

@@ -3,6 +3,7 @@ package servlet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import controller.Controller;
 import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.servlet.ServletException;
@@ -20,16 +21,16 @@ public class SignupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String username = body.get("userName").getAsString();
-        String password = body.get("password").getAsString();
         String role = body.get("role").getAsString();
-        // TODO: parse to userDTO (via Gson) & add signed up user
-//        JsonObject reply = new JsonObject();
-//        reply.addProperty("role", role);
-//        response.getWriter().write(reply.toString());
-//        response.getWriter().close();
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.doPost(request, response);
+        JsonObject reply = new JsonObject();
+        if(role == null || role.isEmpty()) {
+            role = "consumer";
+        }
+        boolean isSuccessfullyAdded = Controller.getInstance().addCustomer(username, role);
+        if(!isSuccessfullyAdded) {
+            reply.addProperty("errorMessage", "error registering user");
+        }
+        response.getWriter().write(reply.toString());
+        response.getWriter().close();
     }
 }
