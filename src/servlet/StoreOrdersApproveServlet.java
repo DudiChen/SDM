@@ -20,9 +20,11 @@ import java.util.List;
 @WebServlet(name = "StoreOrdersApproveServlet", urlPatterns = {"/api/areas/stores/orders/approve"})
 public class StoreOrdersApproveServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String storeId = request.getParameter("storeId");
+//        String areaId = request.getParameter("areaId");
+//        String storeId = request.getParameter("storeId");
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
         JsonObject orderJSON = body.get("order").getAsJsonObject();
         JsonObject discountsJSON = body.get("discounts").getAsJsonObject();
         Gson gson = new Gson();

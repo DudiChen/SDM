@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import servlet.pojo.ProductInAreaDTO;
 import servlet.pojo.ProductInStoreDTO;
+import servlet.util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,9 +23,13 @@ public class StoreProductsServlet extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String storeId = request.getParameter("storeId");
+    // protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String areaId = request.getParameter("areaId");
+//        String storeId = request.getParameter("storeId");
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
         // TODO: fetch all products in store of area according to areaId & storeId
         // Dummy:
         String reply = "";

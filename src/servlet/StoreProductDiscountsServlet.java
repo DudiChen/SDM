@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import servlet.pojo.DiscountDTO;
 import servlet.pojo.OfferDTO;
 import servlet.pojo.ProductInStoreDTO;
+import servlet.util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,10 +24,15 @@ public class StoreProductDiscountsServlet extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String storeId = request.getParameter("storeId");
-        String productId = request.getParameter("productId");
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String areaId = request.getParameter("areaId");
+//        String storeId = request.getParameter("storeId");
+//        String productId = request.getParameter("productId");
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
+        String productId = body.get("productId").getAsString();
         // TODO: fetch all discounts according to product in store of area according to areaId, storeId & productId
         // Dummy:
         String reply = "";
