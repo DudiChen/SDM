@@ -19,7 +19,18 @@ import java.util.List;
 @WebServlet(name = "StoresServlet", urlPatterns = {"/api/areas/stores"})
 public class StoresServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        String areaId = request.getParameter("areaId");
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String ownerName = body.get("ownerName").getAsString();
+        String storeName = body.get("storeName").getAsString();
+        int x = body.get("storeX").getAsInt();
+        int y = body.get("storeY").getAsInt();
+        double ppk = body.get("ppk").getAsDouble();
+        int soldProducts = body.get("soldProducts").getAsInt();
+        // TODO: add store to the system
+        // Dummy:
+        response.getWriter().write("Great Success!");
+        response.getWriter().close();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
