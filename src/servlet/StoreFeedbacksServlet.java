@@ -33,8 +33,6 @@ public class StoreFeedbacksServlet extends HttpServlet {
         Controller.getInstance().addStoreFeedback(uuid, areaId, storeId, rating, text);
         // String customerName = <function that gets customer name by uuid>
 //        StoreFeedbackDTO storeRating = new StoreFeedbackDTO(customerName, rating, text);
-        // TODO: add rating to store in the system
-        // Dummy:
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }

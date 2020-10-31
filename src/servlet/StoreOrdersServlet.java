@@ -7,10 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import controller.Controller;
 import entity.Discount;
-import entity.market.OrderInvoice;
+import entity.OrderInvoice;
 import servlet.pojo.DiscountDTO;
-import servlet.pojo.ProductInAreaDTO;
-import servlet.pojo.StoreDTO;
 import servlet.pojo.StoreOrderDTO;
 import servlet.util.ServletUtils;
 
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 // get available discounts from products and discounts map !

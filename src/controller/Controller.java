@@ -2,8 +2,8 @@ package controller;
 
 import command.Executor;
 import entity.*;
-import entity.market.Market;
-import entity.market.OrderInvoice;
+import entity.Area;
+import entity.OrderInvoice;
 import exception.DiscountsRemovedException;
 import exception.MarketIsEmptyException;
 import exception.OrderValidationException;
@@ -27,12 +27,12 @@ public class Controller {
 //    private Executor executor;
     private AtomicReference<Store> chosenStore;
     private boolean loaded = false;
-    private Market market;
+    private Area market;
     private int currentCustomerId;
     private static Controller instance;
 
     private Controller() {
-        this.market = new Market();
+        this.market = new Area();
 //        this.executor = new Executor(this);
         this.chosenStore = new AtomicReference<>();
         registerToViewEvents();

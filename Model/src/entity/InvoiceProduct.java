@@ -1,4 +1,4 @@
-package entity.market;
+package entity;
 
 import java.io.Serializable;
 

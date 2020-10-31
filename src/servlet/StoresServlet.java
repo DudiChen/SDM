@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import controller.Controller;
 import entity.Store;
+import servlet.pojo.ProductInNewStoreDTO;
 import servlet.pojo.StoreDTO;
 import servlet.util.ServletUtils;
 
@@ -14,8 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +27,20 @@ public class StoresServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String areaId = request.getParameter("areaId");
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        String ownerName = body.get("ownerName").getAsString();
+        String uuid = body.get("uuid").getAsString();
         String storeName = body.get("storeName").getAsString();
         int x = body.get("storeX").getAsInt();
         int y = body.get("storeY").getAsInt();
         double ppk = body.get("ppk").getAsDouble();
-        int soldProducts = body.get("soldProducts").getAsInt();
-        // TODO: add store to the system
-        // Dummy:
+        Gson gson = new Gson();
+        JsonObject productsInNewStoreJson = body.get("soldProducts").getAsJsonObject();
+        // id, price
+        List<ProductInNewStoreDTO> productInNewStoreDTOs = gson.fromJson(productsInNewStoreJson, new TypeToken<ArrayList<ProductInNewStoreDTO>>(){}.getType());
+        Map<String, Integer> productIdToPriceInNewStore = new HashMap<>();
+        for(ProductInNewStoreDTO dto : productInNewStoreDTOs) {
+            productIdToPriceInNewStore.put(dto.getId(), dto.getPrice());
+        }
+        Controller.getInstance().addNewStoreToArea(uuid, areaId, storeName, new Point(x,y), productIdToPriceInNewStore);
         response.getWriter().write("Great Success!");
         response.getWriter().close();
     }

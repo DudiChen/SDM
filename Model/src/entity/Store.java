@@ -1,7 +1,5 @@
 package entity;
 
-import entity.market.InvoiceDiscountProduct;
-import entity.market.OrderInvoice;
 import exception.ProductIdNotFoundException;
 import javafx.util.Pair;
 import java.awt.*;

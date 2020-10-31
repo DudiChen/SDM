@@ -29,8 +29,6 @@ public class AreaProductsServlet extends HttpServlet {
         String areaId = request.getParameter("areaId");
         List<Product> productList = Controller.getInstance().getAllProductInArea(areaId);
         List<ProductInAreaDTO> productDTOsList = productList.stream().map(ProductInAreaDTO::new).collect(Collectors.toList());
-        // TODO: fetch all products in area according to areaId
-        // Dummy:
         String reply = "";
         Gson gson = new Gson();
         JsonElement temp = gson.toJsonTree(productDTOsList);

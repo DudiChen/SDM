@@ -23,7 +23,7 @@ public class Order {
         this.destination = destination;
         this.deliveryDate = deliveryDate;
         this.id = this.hashCode();
-        this.id = MarketUtils.generateIdForOrder();
+        this.id = MarketUtils.generateId();
         this.storeId = storeId;
     }
 

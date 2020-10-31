@@ -1,7 +1,7 @@
 package controller;
 
-import builder.MarketBuilder;
-import entity.market.Market;
+import builder.AreaBuilder;
+import entity.Area;
 import exception.XMLException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -12,7 +12,7 @@ import javax.xml.bind.ValidationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class LoadXmlTask extends Task<Market> {
+public class LoadXmlTask extends Task<Area> {
     private final static String XML_FILE_NOT_FOUND_MESSAGE = "XML file does not exist in path";
     private final static String XML_FILE_INVALID_TYPE_MESSAGE = "XML file of invalid type ";
     private String fullFilePath;
@@ -24,7 +24,7 @@ public class LoadXmlTask extends Task<Market> {
     }
 
     @Override
-    protected Market call() throws FileNotFoundException, XMLParseException, XMLException, ValidationException, InterruptedException {
+    protected Area call() throws FileNotFoundException, XMLParseException, XMLException, ValidationException, InterruptedException {
         JaxbHandler jaxbHandler = new JaxbHandler();
         Platform.runLater(() -> updateMessage("Opening File ..."));
         Thread.sleep(1000);
@@ -41,9 +41,9 @@ public class LoadXmlTask extends Task<Market> {
         Thread.sleep(1000);
         Platform.runLater(() -> updateMessage("Building Objects ..."));
         Thread.sleep(1000);
-        Market market = null;
+        Area market = null;
         try {
-            market =  new MarketBuilder().build(jaxbHandler.extractXMLData(xmlFile));
+            market =  new AreaBuilder().build(jaxbHandler.extractXMLData(xmlFile));
             Platform.runLater(() -> updateProgress(1, 1));
             Platform.runLater(() -> updateMessage("Finishing ..."));
             Thread.sleep(500);
