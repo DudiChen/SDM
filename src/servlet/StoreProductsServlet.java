@@ -29,7 +29,7 @@ public class StoreProductsServlet extends HttpServlet {
         // Dummy:
         String reply = "";
         if (areaId.equals("1")) {
-            ProductInStoreDTO product1 = new ProductInStoreDTO("Nachle-Coffe", "2","weight", 12.0 );
+            ProductInStoreDTO product1 = new ProductInStoreDTO("Nachle-Coffe", "2","Weight", 12.0 );
             List<ProductInStoreDTO> productsList = Arrays.asList(product1);
             Gson gson = new Gson();
             JsonElement temp = gson.toJsonTree(productsList);

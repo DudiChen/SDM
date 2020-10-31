@@ -26,10 +26,7 @@ public class TransactionServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         double amount = body.get("amount").getAsDouble();
         String dateString = body.get("date").getAsString();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH::mm:ss", Locale.ENGLISH);
-        try {
-            Date date = formatter.parse(dateString);
-        } catch (ParseException e) {}
+        Date date = ServletUtils.formatStringToDate(dateString);
         // TODO: Consumer recharge; add credit to consumer account
         // Dummy:
         response.getWriter().write("Great Success!");

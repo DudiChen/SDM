@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import servlet.pojo.ProductInAreaDTO;
-import servlet.pojo.StoreDTO;
+import servlet.pojo.DiscountDTO;
+import servlet.pojo.OfferDTO;
+import servlet.pojo.ProductInStoreDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,26 +17,32 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@WebServlet(name = "ProductsServlet", urlPatterns = {"/api/areas/products"})
-public class ProductsServlet extends HttpServlet {
+@WebServlet(name = "StoreProductDiscountsServlet", urlPatterns = {"/api/areas/stores/products/discounts"})
+public class StoreProductDiscountsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String areaId = request.getParameter("areaId");
-        // TODO: fetch all products in area according to areaId
+        String storeId = request.getParameter("storeId");
+        String productId = request.getParameter("productId");
+        // TODO: fetch all discounts according to product in store of area according to areaId, storeId & productId
         // Dummy:
         String reply = "";
         if (areaId.equals("1")) {
-            ProductInAreaDTO product1 = new ProductInAreaDTO("Banana", "1", "weight", 2, 3.0, 10);
-            ProductInAreaDTO product2 = new ProductInAreaDTO("Nachle-Coffee", "2", "quantity", 1, 12.0, 7);
-            List<ProductInAreaDTO> productsList = Arrays.asList(product1, product2);
+            DiscountDTO discount1 = new DiscountDTO("Baal Abait Eshtagea",
+                    "all-or-nothing",
+                    Arrays.asList(
+                            new OfferDTO("Banana", 0.0, 3.0),
+                            new OfferDTO("Nachle-Coffe", 2.0, 1.0)
+                    ), 7);
+            List<DiscountDTO> discountsList = Arrays.asList(discount1);
             Gson gson = new Gson();
-            JsonElement temp = gson.toJsonTree(productsList);
+            JsonElement temp = gson.toJsonTree(discountsList);
             JsonArray productsListJSON = temp.getAsJsonArray();
             JsonObject replyJSON = new JsonObject();
-            replyJSON.add("allProducts", productsListJSON);
+            replyJSON.add("allDiscounts", productsListJSON);
             reply = String.valueOf(replyJSON);
         }
         else {

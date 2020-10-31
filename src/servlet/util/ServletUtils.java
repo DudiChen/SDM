@@ -7,6 +7,9 @@ import com.google.gson.JsonParser;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ServletUtils {
     public static JsonObject readRequestBodyAsJSON(HttpServletRequest request) throws IOException {
@@ -19,5 +22,19 @@ public class ServletUtils {
         JsonElement je = new JsonParser().parse(bodyBuilder.toString());
         JsonObject jsonResult = je.getAsJsonObject();
         return jsonResult;
+    }
+
+    public static String formatDateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return formatter.format(date);
+    }
+
+    public static Date formatStringToDate(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        try {
+            date = formatter.parse(dateString);
+        } catch (ParseException e) {}
+        return date;
     }
 }

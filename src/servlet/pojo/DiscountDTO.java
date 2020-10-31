@@ -6,9 +6,9 @@ public class DiscountDTO {
     String name;
     String type;
     List<OfferDTO> offers;
-    double quantity;
+    int quantity;
 
-    public DiscountDTO(String name, String type, List<OfferDTO> offers, double quantity) {
+    public DiscountDTO(String name, String type, List<OfferDTO> offers, int quantity) {
         this.name = name;
         this.type = type;
         this.offers = offers;
