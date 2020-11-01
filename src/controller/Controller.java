@@ -15,10 +15,10 @@ import exception.OrderValidationException;
 import exception.XMLException;
 import javafx.util.Pair;
 import jaxb.JaxbHandler;
-import view.ApplicationContext;
-import view.View;
-import view.menu.item.CustomerMapElement;
-import view.menu.item.StoreMapElement;
+//import view.ApplicationContext;
+//import view.View;
+//import view.menu.item.CustomerMapElement;
+//import view.menu.item.StoreMapElement;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.transaction.Transaction;
@@ -54,15 +54,16 @@ public class Controller {
         return instance;
     }
 
-//    public void fetchAllStoresToUI() {
-//        List<Store> stores = new ArrayList<>();
-//        if (market == null || market.isEmpty()) {
-//            view.displayStores(stores);
-//            return;
-//        }
-//        stores = this.market.getAllStores();
-//        view.displayStores(stores);
-//    }
+    public void fetchAllStoresToUI() {
+        List<Store> stores = new ArrayList<>();
+        if (market == null || market.isEmpty()) {
+            view.displayStores(stores);
+            return;
+        }
+        stores = this.market.getAllStores();
+        view.displayStores(stores);
+    }
+
     public int getProductNumberOfSales(int areaId, int productId) {
         return this.market.getAreaById(areaId).getAllStores().stream()
                 .map(Store::getTotalProductSales)
@@ -79,10 +80,10 @@ public class Controller {
         view.displayStores(stores);
     }
 
-//    public void loadXMLDataToUI() {
-//        String xmlPath = view.promptUserFilePath();
-//        loadXMLData(xmlPath);
-//    }
+    public void loadXMLDataToUI() {
+        String xmlPath = view.promptUserFilePath();
+        loadXMLData(xmlPath);
+    }
 
     public void loadXMLData(File xmlFile) {
         JaxbHandler jaxbHandler = new JaxbHandler();
