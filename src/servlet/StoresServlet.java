@@ -40,7 +40,7 @@ public class StoresServlet extends HttpServlet {
         for(ProductInNewStoreDTO dto : productInNewStoreDTOs) {
             productIdToPriceInNewStore.put(dto.getId(), dto.getPrice());
         }
-        Controller.getInstance().addNewStoreToArea(uuid, areaId, storeName, new Point(x,y), productIdToPriceInNewStore);
+        Controller.getInstance().addNewStoreToArea(uuid, areaId, storeName, new Point(x,y), productIdToPriceInNewStore, ppk);
         response.getWriter().write("Great Success!");
         response.getWriter().close();
     }

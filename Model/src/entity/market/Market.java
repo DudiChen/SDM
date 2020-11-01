@@ -13,6 +13,10 @@ public class Market {
         this.idToArea = new HashMap<>();
     }
 
+    public Area getAreaById(int areaId) {
+        return this.idToArea.get(areaId);
+    }
+
     public List<Customer> getAllCustomers() {
         return new ArrayList<>(this.idToCustomer.values());
     }

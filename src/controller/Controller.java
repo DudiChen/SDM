@@ -4,6 +4,8 @@ import command.Executor;
 import entity.*;
 import entity.Area;
 import entity.OrderInvoice;
+import entity.market.Market;
+import entity.market.MarketUtils;
 import exception.DiscountsRemovedException;
 import exception.MarketIsEmptyException;
 import exception.OrderValidationException;
@@ -15,9 +17,12 @@ import view.menu.item.CustomerMapElement;
 import view.menu.item.StoreMapElement;
 
 import javax.management.modelmbean.XMLParseException;
+import javax.transaction.Transaction;
 import javax.xml.bind.ValidationException;
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -27,12 +32,12 @@ public class Controller {
 //    private Executor executor;
     private AtomicReference<Store> chosenStore;
     private boolean loaded = false;
-    private Area market;
+    private Market market;
     private int currentCustomerId;
     private static Controller instance;
 
     private Controller() {
-        this.market = new Area();
+        this.market = new Market();
 //        this.executor = new Executor(this);
         this.chosenStore = new AtomicReference<>();
         registerToViewEvents();
@@ -395,5 +400,25 @@ public class Controller {
 
     public List<Product> getAllProducts() {
         return this.market.getAllProducts();
+    }
+
+    // ex3
+    public List<Transaction> getTransactionsForCustomer(int uuid) {
+        return this.market.getCustomerById(uuid).getAllTransactions();
+    }
+
+    public void rechargeCustomerBalance(int uuid, double amount, Date date) {
+        Customer customer = Controller.getInstance().getCustomerById(uuid);
+        entity.Transaction transaction = new entity.Transaction(entity.Transaction.TransactionType.RECHARGE, amount, date, customer, customer);
+        this.market.getCustomerById(uuid).addTransaction(transaction);
+    }
+
+    public void addNewStoreToArea(int uuid, int areaId, String storeName, Point point, Map<String, Integer> productIdToPriceInNewStore, double ppk) {
+        Customer customer = this.getCustomerById(uuid);
+        Map<Integer, StoreProduct> stockProducts = new HashMap<>();
+        for(productIdToPriceInNewStore)
+        Stock stock = new Stock();
+        Store newStore = new Store(point, stock, ppk, MarketUtils.generateIdForStore(areaId), storeName, new ArrayList());
+        this.market.getAreaById(areaId).addStore();
     }
 }

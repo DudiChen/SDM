@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import controller.Controller;
+import entity.Feedback;
 import servlet.pojo.StoreFeedbackDTO;
 import servlet.util.ServletUtils;
 

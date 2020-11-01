@@ -1,15 +1,17 @@
 package servlet.pojo;
 
+import entity.StoreProduct;
+
 public class ProductInStoreDTO {
      String name;
      String id;
      String purchaseMethod;
      double price;
 
-    public ProductInStoreDTO(String name, String id, String purchaseMethod, double price) {
-        this.name = name;
-        this.id = id;
-        this.purchaseMethod = purchaseMethod;
-        this.price = price;
+    public ProductInStoreDTO(StoreProduct product) {
+        this.name = product.getName();
+        this.id = Integer.toString(product.getId());
+        this.purchaseMethod = product.getProduct().getPurchaseMethod().getName();
+        this.price = product.getPrice();
     }
 }

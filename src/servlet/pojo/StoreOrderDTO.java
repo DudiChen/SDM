@@ -1,5 +1,7 @@
 package servlet.pojo;
 
+import controller.Controller;
+import entity.OrderInvoice;
 import servlet.util.ServletUtils;
 
 import java.text.SimpleDateFormat;
@@ -13,12 +15,12 @@ public class StoreOrderDTO {
     double totalProductsPrice;
     double deliveryPrice;
 
-    public StoreOrderDTO(String customerName, String id, Date date, int totalProducts, double totalProductsPrice, double deliveryPrice) {
-        this.customerName = customerName;
-        this.id = id;
-        this.date = ServletUtils.formatDateToString(date);
-        this.totalProducts = totalProducts;
-        this.totalProductsPrice = totalProductsPrice;
-        this.deliveryPrice = deliveryPrice;
+    public StoreOrderDTO(OrderInvoice orderInvoice) {
+        this.customerName = Controller.getInstance().getCustomerById(orderInvoice.getCustomerId()).getName();
+        this.id = Integer.toString(orderInvoice.getOrderId());
+        this.date = ServletUtils.formatDateToString(orderInvoice.getDeliveryDate());
+        this.totalProducts = orderInvoice.getNumberOfInvoiceProducts();
+        this.totalProductsPrice = orderInvoice.getTotalProductsPrice();
+        this.deliveryPrice = orderInvoice.getShipmentPrice();
     }
 }

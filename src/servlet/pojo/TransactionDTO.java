@@ -2,6 +2,7 @@ package servlet.pojo;
 
 import servlet.util.ServletUtils;
 
+import javax.transaction.Transaction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,11 +13,11 @@ public class TransactionDTO {
     int balanceBefore;
     int balanceAfter;
 
-    public TransactionDTO(String type, Date date, int amount, int balanceBefore, int balanceAfter) {
-        this.type = type;
-        this.date = ServletUtils.formatDateToString(date);
-        this.amount = amount;
-        this.balanceBefore = balanceBefore;
-        this.balanceAfter = balanceAfter;
+    public TransactionDTO(Transaction transaction) {
+        this.type = transaction.getType();
+        this.date = ServletUtils.formatDateToString(transaction.getDate());
+        this.amount = transaction.getAmount();
+        this.balanceBefore = transaction.getBalanceBefore();
+        this.balanceAfter = transaction.getBalanceAfter();
     }
 }

@@ -3,6 +3,7 @@ package servlet.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import entity.Discount;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
@@ -44,5 +45,10 @@ public class ServletUtils {
     public static File saveFIle(final String base64) {
         byte[] byteFile = DatatypeConverter.parseBase64Binary(base64);
         return new File(ServletUtils.class.getProtectionDomain().getCodeSource().getLocation() + "/area.xml");
+    }
+
+    public static String parseDiscountOperator(Discount.DiscountOperator operator) {
+        String withoutMakaf = operator.toString().replace('-', ' ').toLowerCase();
+        return Character.toUpperCase(withoutMakaf.charAt(0)) + withoutMakaf.substring(1);
     }
 }
