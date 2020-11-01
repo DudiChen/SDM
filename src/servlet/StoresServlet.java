@@ -40,14 +40,14 @@ public class StoresServlet extends HttpServlet {
         for(ProductInNewStoreDTO dto : productInNewStoreDTOs) {
             productIdToPriceInNewStore.put(dto.getId(), dto.getPrice());
         }
-        Controller.getInstance().addNewStoreToArea(uuid, areaId, storeName, new Point(x,y), productIdToPriceInNewStore, ppk);
+        Controller.getInstance().addNewStoreToArea(Integer.parseInt(uuid), Integer.parseInt(areaId), storeName, new Point(x,y), productIdToPriceInNewStore, ppk);
         response.getWriter().write("Great Success!");
         response.getWriter().close();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String areaId = request.getParameter("areaId");
-        List<Store> stores = Controller.getInstance().getAllStoresInArea(areaId);
+        List<Store> stores = Controller.getInstance().getAllStoresInArea(Integer.parseInt(areaId));
         List<StoreDTO> storeDTOs = stores.stream().map(StoreDTO::new).collect(Collectors.toList());
         // Dummy:
         String reply = "";

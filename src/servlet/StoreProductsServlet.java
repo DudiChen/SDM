@@ -34,7 +34,7 @@ public class StoreProductsServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        List<StoreProduct> productList = Controller.getInstance().getAllProductsInStore(areaId, storeId);
+        List<StoreProduct> productList = Controller.getInstance().getAllProductsInStore(Integer.parseInt(areaId), Integer.parseInt(storeId));
         List<ProductInStoreDTO> productInStoreDTOS = productList.stream().map(ProductInStoreDTO::new).collect(Collectors.toList());
         String reply = "";
         Gson gson = new Gson();

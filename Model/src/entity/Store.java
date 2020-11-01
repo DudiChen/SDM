@@ -20,6 +20,7 @@ public class Store {
     private double totalShipmentIncome;
     private Map<Integer, OrderInvoice> ordersHistory;
     private Map<Integer, List<Discount>> productIdToDiscounts;
+    private List<Feedback> feedbacks;
 
     public Store(Point point, Stock stock, int ppk, int id, String name, Map<Integer, List<Discount>> productIdToDiscounts) {
         this.location = point;
@@ -29,6 +30,7 @@ public class Store {
         this.name = name;
         this.totalShipmentIncome = 0;
         this.ordersHistory = new HashMap<>();
+        this.feedbacks = new ArrayList<>();
         this.productIdToDiscounts = productIdToDiscounts;
     }
 
@@ -184,5 +186,13 @@ public class Store {
 
     public void removeProductDiscounts(int productId) {
         this.productIdToDiscounts.remove(productId);
+    }
+
+    public void addFeedback(Feedback feedback) {
+        this.feedbacks.add(feedback);
+    }
+
+    public List<Feedback> getAllFeedbacks() {
+        return this.feedbacks;
     }
 }

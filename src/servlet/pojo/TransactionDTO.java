@@ -9,15 +9,15 @@ import java.util.Date;
 public class TransactionDTO {
     String type;
     String date;
-    int amount;
-    int balanceBefore;
-    int balanceAfter;
+    double amount;
+    double balanceBefore;
+    double balanceAfter;
 
-    public TransactionDTO(Transaction transaction) {
-        this.type = transaction.getType();
+    public TransactionDTO(entity.Transaction transaction) {
+        this.type = transaction.getTransactionType().name().toLowerCase();
         this.date = ServletUtils.formatDateToString(transaction.getDate());
         this.amount = transaction.getAmount();
-        this.balanceBefore = transaction.getBalanceBefore();
-        this.balanceAfter = transaction.getBalanceAfter();
+        this.balanceBefore = transaction.getPreviousBalance();
+        this.balanceAfter = this.balanceBefore + transaction.getAmount();
     }
 }

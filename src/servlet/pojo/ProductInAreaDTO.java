@@ -11,12 +11,12 @@ public class ProductInAreaDTO {
     double averagePrice;
     int sells;
 
-    public ProductInAreaDTO(Product product) {
+    public ProductInAreaDTO(Product product, int areaId) {
         this.name = product.getName();
-        this.id = product.getId();
-        this.purchaseMethod = product.getPurchaseMethod();
-        this.sellingStores = Controller.getInstance().getNumberStoresThatSellProduct(product.getId());
-        this.averagePrice = Controller.getInstance().getAverageProductPrice();
-        this.sells = Controller.getProductNumberOfSales(product.getId());
+        this.id = Integer.toString(product.getId());
+        this.purchaseMethod = product.getPurchaseMethod().getName();
+        this.sellingStores = Controller.getInstance().getNumberOfStoresThatSellProduct(areaId, product.getId());
+        this.averagePrice = Controller.getInstance().getAverageProductPrice(areaId, product.getId());
+        this.sells = Controller.getInstance().getProductNumberOfSales(areaId, product.getId());
     }
 }

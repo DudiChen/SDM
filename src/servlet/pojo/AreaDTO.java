@@ -1,5 +1,9 @@
 package servlet.pojo;
 
+import controller.Controller;
+import entity.Area;
+import exception.MarketIsEmptyException;
+
 public class AreaDTO {
     String id;
     String name;
@@ -9,13 +13,13 @@ public class AreaDTO {
     int totalOrders;
     double avgOrderCost;
 
-    public AreaDTO(String id,String name, String owner, int totalProducts, int totalStores, int totalOrders, double avgOrderCost) {
-        this.id = id;
-        this.name = name;
-        this.owner = owner;
-        this.totalProducts = totalProducts;
-        this.totalStores = totalStores;
-        this.totalOrders = totalOrders;
-        this.avgOrderCost = avgOrderCost;
+    public AreaDTO(Area area) throws MarketIsEmptyException {
+        this.id = area.getId();
+        this.name = area.getName();
+        this.owner = area.getOwnerName();
+        this.totalProducts = area.getAllProducts().size();
+        this.totalStores = area.getAllStores().size();
+        this.totalOrders = area.getOrdersHistory().size();
+        this.avgOrderCost = Controller.getInstance().getAverageProductPrice(area.getId());
     }
 }

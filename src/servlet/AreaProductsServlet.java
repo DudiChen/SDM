@@ -27,8 +27,9 @@ public class AreaProductsServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String areaId = request.getParameter("areaId");
-        List<Product> productList = Controller.getInstance().getAllProductInArea(areaId);
-        List<ProductInAreaDTO> productDTOsList = productList.stream().map(ProductInAreaDTO::new).collect(Collectors.toList());
+        List<Product> productList = Controller.getInstance().getAllProductInArea(Integer.parseInt(areaId));
+        List<ProductInAreaDTO> productDTOsList = productList.stream()
+                .map(product -> new ProductInAreaDTO(product, Integer.parseInt(areaId))).collect(Collectors.toList());
         String reply = "";
         Gson gson = new Gson();
         JsonElement temp = gson.toJsonTree(productDTOsList);
