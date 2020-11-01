@@ -3,6 +3,7 @@ package servlet.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import entity.Discount;
 import controller.Controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,5 +60,10 @@ public class ServletUtils {
         }
         return xmlFile;
 //        return new File(ServletUtils.class.getProtectionDomain().getCodeSource().getLocation() + "/area.xml");
+    }
+
+    public static String parseDiscountOperator(Discount.DiscountOperator operator) {
+        String withoutMakaf = operator.toString().replace('-', ' ').toLowerCase();
+        return Character.toUpperCase(withoutMakaf.charAt(0)) + withoutMakaf.substring(1);
     }
 }

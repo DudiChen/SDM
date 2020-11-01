@@ -33,7 +33,7 @@ public class StoreOrdersApproveServlet extends HttpServlet {
 
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
-        Type productsMapType = new TypeToken<HashMap<String, Integer>() {
+        Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
         Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);

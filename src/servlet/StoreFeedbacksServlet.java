@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import controller.Controller;
+import entity.Feedback;
 import servlet.pojo.StoreFeedbackDTO;
 import servlet.util.ServletUtils;
 
@@ -30,7 +31,7 @@ public class StoreFeedbacksServlet extends HttpServlet {
         String uuid = body.get("uuid").getAsString();
         int rating = body.get("rating").getAsInt();
         String text = body.get("text").getAsString();
-        Controller.getInstance().addStoreFeedback(uuid, areaId, storeId, rating, text);
+        Controller.getInstance().addStoreFeedback(Integer.parseInt(uuid), Integer.parseInt(areaId), Integer.parseInt(storeId), rating, text);
         // String customerName = <function that gets customer name by uuid>
 //        StoreFeedbackDTO storeRating = new StoreFeedbackDTO(customerName, rating, text);
         response.getWriter().write("Great Success");
@@ -43,7 +44,7 @@ public class StoreFeedbacksServlet extends HttpServlet {
 //        String storeId = request.getParameter("storeId");
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        List<Feedback> feedbacks = Controller.getInstance().getStoreFeedbacks(areaId, storeId);
+        List<Feedback> feedbacks = Controller.getInstance().getStoreFeedbacks(Integer.parseInt(areaId), Integer.parseInt(storeId));
         List<StoreFeedbackDTO> storeFeedbackDTOs = feedbacks.stream().map(StoreFeedbackDTO::new).collect(Collectors.toList());
         String reply = "";
         Gson gson = new Gson();

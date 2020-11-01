@@ -7,6 +7,8 @@ import entity.*;
 import entity.Area;
 import entity.OrderInvoice;
 import entity.market.Market;
+import entity.market.Market;
+import entity.market.MarketUtils;
 import exception.DiscountsRemovedException;
 import exception.MarketIsEmptyException;
 import exception.OrderValidationException;
@@ -19,9 +21,12 @@ import view.menu.item.CustomerMapElement;
 import view.menu.item.StoreMapElement;
 
 import javax.management.modelmbean.XMLParseException;
+import javax.transaction.Transaction;
 import javax.xml.bind.ValidationException;
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -58,6 +63,21 @@ public class Controller {
 //        stores = this.market.getAllStores();
 //        view.displayStores(stores);
 //    }
+    public int getProductNumberOfSales(int areaId, int productId) {
+        return this.market.getAreaById(areaId).getAllStores().stream()
+                .map(Store::getTotalProductSales)
+                .sum();
+    }
+
+    public void fetchAllStoresToUI() {
+        List<Store> stores = new ArrayList<>();
+        if (market == null || market.isEmpty()) {
+            view.displayStores(stores);
+            return;
+        }
+        stores = this.market.getAllStores();
+        view.displayStores(stores);
+    }
 
 //    public void loadXMLDataToUI() {
 //        String xmlPath = view.promptUserFilePath();
@@ -412,5 +432,97 @@ public class Controller {
         return this.market.getAllProducts();
     }
 
+    // ex3
+    public List<Transaction> getTransactionsForCustomer(int uuid) {
+        return this.market.getCustomerById(uuid).getAllTransactions();
+    }
 
+    public void rechargeCustomerBalance(int uuid, double amount, Date date) {
+        Customer customer = Controller.getInstance().getCustomerById(uuid);
+        entity.Transaction transaction = new entity.Transaction(entity.Transaction.TransactionType.RECHARGE, amount, date, customer, customer);
+        this.market.getCustomerById(uuid).addTransaction(transaction);
+    }
+
+    public void addNewStoreToArea(int uuid, int areaId, String storeName, Point point, Map<String, Integer> productIdToPriceInNewStore, double ppk) {
+        Customer customer = this.getCustomerById(uuid);
+        Map<Integer, StoreProduct> stockProducts = new HashMap<>();
+        for(Map.Entry<String, Integer> entry : productIdToPriceInNewStore.entrySet()) {
+            int integerId = Integer.parseInt(entry.getKey());
+            StoreProduct newProduct = new StoreProduct(Controller.getInstance().getProductById(integerId), entry.getValue());
+            stockProducts.put(integerId, newProduct);
+        }
+        Stock stock = new Stock(stockProducts);
+        Store newStore = new Store(point, stock, ppk, MarketUtils.generateIdForStore(Controller.getInstance().getAreaById(areaId)), storeName, new ArrayList());
+        this.market.getAreaById(areaId).addStore(newStore);
+    }
+
+    private Area getAreaById(int areaId) {
+        this.market.getAreaById(areaId);
+    }
+
+    public List<Store> getAllStoresInArea(int areaId) {
+        return this.market.getAreaById(areaId).getAllStores();
+    }
+
+    public List<StoreProduct> getAllProductsInStore(int areaId, int storeId) {
+        return this.market.getAreaById(areaId).getStoreById().getStock().getSoldProducts().values();
+    }
+
+    public List<Discount> getDiscountsInStoreByProductId(int areaId, int storeId, int productId) {
+        return this.market.getAreaById(areaId).getStoreById().getDiscountsByProductId(productId);
+    }
+
+    public List<OrderInvoice> getAllOrdersForStore(int areaId, int storeId) {
+        return this.market.getAreaById(areaId).getStoreById(storeId).getOrdersHistory();
+    }
+
+    public List<InvoiceProduct> getAllProductsInStoreOrder(int areaId, int storeId, int orderId) {
+        return this.market.getAreaById(areaId).getStoreById(storeId).getOrdersHistory().stream()
+                .filter(orderInvoice -> orderInvoice.getOrderId() == orderId)
+                .findAny().get().getInvoiceProducts();
+    }
+
+    public void addStoreFeedback(int uuid, int areaId, int storeId, int rating, String text) {
+        Feedback feedback = new Feedback(this.getCustomerById(uuid).getName(), rating, text);
+        this.market.getAreaById(areaId).getStoreById(storeId).addFeedback(feedback);
+    }
+
+    public boolean addCustomer(String username, String role) {
+        Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0));
+        return this.market.addCustomer(customer);
+    }
+
+    public Customer getCustomerByName(String userName) {
+        return this.market.getAllCustomers().stream()
+                .filter(customer -> customer.getName().equals(userName)).findAny().orElse(null);
+    }
+
+    public String getBalanceByCustomerId(int uuid) {
+        return this.market.getCustomerById(uuid).getBalance();
+    }
+
+    public List<Area> getAllAreas() {
+        return this.market.getAllAreas();
+    }
+
+    public double getAverageProductPrice(int areaId, int productId) {
+        return this.market.getAreaById(areaId).getAllStores().stream()
+                .map(store -> store.getPriceOfProduct(productId))
+                .mapToDouble(x->x).average().orElse(0);
+    }
+
+    public List<Product> getAllProductInArea(int areaId) {
+        return this.market.getAreaById(areaId).getAllProducts();
+    }
+
+    public List<Feedback> getStoreFeedbacks(int areaId, int storeId) {
+        return this.market.getAreaById(areaId).getStoreById(storeId).getAllFeedbacks();
+    }
+
+    public int getNumberOfStoresThatSellProduct(int areaId, int productId) {
+        return this.market.getAreaById(areaId).getAllStores().stream()
+                .map(store -> store.isProductSold(productId) ? 1 : 0)
+                .mapToInt(x->x)
+                .sum();
+    }
 }

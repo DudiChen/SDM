@@ -29,7 +29,9 @@ public class Discount {
         return this.productIdQuantityPair.getValue();
     }
 
-    public int getProductId() { return this.productIdQuantityPair.getKey(); }
+    public int getProductId() {
+        return this.productIdQuantityPair.getKey();
+    }
 
     public boolean isDiscountMatch(int productId, double quantity) {
         return productId == this.productIdQuantityPair.getKey() && quantity <= this.productIdQuantityPair.getValue();
@@ -38,7 +40,7 @@ public class Discount {
     public int discountMatchInstances(int productId, double quantity) {
         int result = 0;
         if (productId == this.productIdQuantityPair.getKey() && quantity <= this.productIdQuantityPair.getValue()) {
-            result =  (int)(this.productIdQuantityPair.getValue() / quantity);
+            result = (int) (this.productIdQuantityPair.getValue() / quantity);
         }
         return result;
     }
@@ -54,8 +56,13 @@ public class Discount {
 
         private final String name;
 
-        private DiscountOperator(String name) {this.name = name;}
-        public String getName() {return this.name;}
+        private DiscountOperator(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
 
         @Override
         public String toString() {

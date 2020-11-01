@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import controller.Controller;
 import entity.Product;
+import entity.StoreProduct;
 import servlet.pojo.ProductInAreaDTO;
 import servlet.pojo.ProductInStoreDTO;
 import servlet.util.ServletUtils;
@@ -33,7 +34,7 @@ public class StoreProductsServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
-        List<Product> productList = Controller.getInstance().getAllProductsInStore(areaId, storeId);
+        List<StoreProduct> productList = Controller.getInstance().getAllProductsInStore(Integer.parseInt(areaId), Integer.parseInt(storeId));
         List<ProductInStoreDTO> productInStoreDTOS = productList.stream().map(ProductInStoreDTO::new).collect(Collectors.toList());
         String reply = "";
         Gson gson = new Gson();

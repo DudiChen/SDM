@@ -2,6 +2,8 @@ package entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 
 public class OrderInvoice implements Serializable {
@@ -63,6 +65,10 @@ public class OrderInvoice implements Serializable {
 
     public double getTotalPrice() {
         return totalPrice;
+    }
+
+    public double getTotalProductsPrice() {
+        return invoiceProducts.stream().map(InvoiceProduct::getPrice).reduce(0.0, Double::sum);
     }
 
     public int getStoreId() {
