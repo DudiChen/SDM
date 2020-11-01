@@ -13,21 +13,30 @@ import java.util.stream.Collectors;
 // TODO : handle errors with proper exceptions
 public class Area {
     private int id;
+    Customer owner;
+    private String name;
     private Map<Integer, Store> idToStore;
     private Map<Integer, Product> idToProduct;
-//    private Map<Integer, Customer> idToCustomer;
     private Map<Integer, OrderInvoice> idToOrderInvoice;
 
     public Area() {
         this.idToOrderInvoice = new HashMap<>();
     }
 
-    public Area(Map<Integer, Store> idToStore, Map<Integer, Product> idToProduct) {
-        this.id = MarketUtils.generateId();
+    public Area(int id, String name, Map<Integer, Store> idToStore, Map<Integer, Product> idToProduct) {
+        this.id = id;
+        this.name = name;
         this.idToStore = idToStore;
         this.idToProduct = idToProduct;
         this.idToOrderInvoice = new HashMap<>();
-//        this.idToCustomer = idToCustomer;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void addStore(Store store) {

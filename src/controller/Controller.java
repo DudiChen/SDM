@@ -80,15 +80,19 @@ public class Controller {
         view.displayStores(stores);
     }
 
-    public void loadXMLDataToUI() {
-        String xmlPath = view.promptUserFilePath();
-        loadXMLData(xmlPath);
-    }
+//    public void loadXMLDataToUI() {
+//        String xmlPath = view.promptUserFilePath();
+//        loadXMLData(xmlPath);
+//    }
 
-    public void loadXMLData(File xmlFile) {
+    public void loadXMLData(File xmlFile, int currentCustomerId) {
+        Area area;
+        Customer currentCustomer = market.getCustomerById(currentCustomerId);
         JaxbHandler jaxbHandler = new JaxbHandler();
         try {
-            market =  new MarketBuilder().build(jaxbHandler.extractXMLData(xmlFile));
+            int newAreaId = MarketUtils.generateIdForArea(market);
+            area =  new AreaBuilder(newAreaId).build(jaxbHandler.extractXMLData(xmlFile));
+            market.addArea(area);
         } catch (ValidationException e) {
             e.printStackTrace();
         } catch (XMLException e) {
@@ -525,5 +529,9 @@ public class Controller {
                 .map(store -> store.isProductSold(productId) ? 1 : 0)
                 .mapToInt(x->x)
                 .sum();
+    }
+
+    public int generateAreaId() {
+        return MarketUtils.generateIdForArea(market);
     }
 }

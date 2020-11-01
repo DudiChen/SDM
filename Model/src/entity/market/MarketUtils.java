@@ -16,4 +16,9 @@ public class MarketUtils {
         int max = area.getAllStores().stream().map(Store::getId).mapToInt(v->v).max().orElse(0);
         return max + 1;
     }
+
+    public static int generateIdForArea(Market market) {
+        int max = market.getAllAreas().stream().map(Area::getId).mapToInt(v->v).max().orElse(0);
+        return max + 1;
+    }
 }
