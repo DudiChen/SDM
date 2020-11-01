@@ -45,8 +45,11 @@ public class StoresServlet extends HttpServlet {
         response.getWriter().close();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String areaId = request.getParameter("areaId");
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String uuid = body.get("uuid").getAsString();
         List<Store> stores = Controller.getInstance().getAllStoresInArea(Integer.parseInt(areaId));
         List<StoreDTO> storeDTOs = stores.stream().map(StoreDTO::new).collect(Collectors.toList());
         // Dummy:
