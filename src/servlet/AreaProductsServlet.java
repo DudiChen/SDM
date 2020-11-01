@@ -25,8 +25,9 @@ public class AreaProductsServlet extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String areaId = request.getParameter("areaId");
+        String uuid = request.getParameter("uuid");
         List<Product> productList = Controller.getInstance().getAllProductInArea(Integer.parseInt(areaId));
         List<ProductInAreaDTO> productDTOsList = productList.stream()
                 .map(product -> new ProductInAreaDTO(product, Integer.parseInt(areaId))).collect(Collectors.toList());
