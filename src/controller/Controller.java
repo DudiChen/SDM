@@ -1,14 +1,18 @@
 package controller;
 
+import builder.AreaBuilder;
+import builder.MarketBuilder;
 import command.Executor;
 import entity.*;
 import entity.Area;
 import entity.OrderInvoice;
+import entity.market.Market;
 import exception.DiscountsRemovedException;
 import exception.MarketIsEmptyException;
 import exception.OrderValidationException;
 import exception.XMLException;
 import javafx.util.Pair;
+import jaxb.JaxbHandler;
 import view.ApplicationContext;
 import view.View;
 import view.menu.item.CustomerMapElement;
@@ -27,12 +31,12 @@ public class Controller {
 //    private Executor executor;
     private AtomicReference<Store> chosenStore;
     private boolean loaded = false;
-    private Area market;
+    private Market market;
     private int currentCustomerId;
     private static Controller instance;
 
     private Controller() {
-        this.market = new Area();
+        this.market = new Market();
 //        this.executor = new Executor(this);
         this.chosenStore = new AtomicReference<>();
         registerToViewEvents();
@@ -45,58 +49,69 @@ public class Controller {
         return instance;
     }
 
-    public void fetchAllStoresToUI() {
-        List<Store> stores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayStores(stores);
-            return;
+//    public void fetchAllStoresToUI() {
+//        List<Store> stores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayStores(stores);
+//            return;
+//        }
+//        stores = this.market.getAllStores();
+//        view.displayStores(stores);
+//    }
+
+//    public void loadXMLDataToUI() {
+//        String xmlPath = view.promptUserFilePath();
+//        loadXMLData(xmlPath);
+//    }
+
+    public void loadXMLData(File xmlFile) {
+        JaxbHandler jaxbHandler = new JaxbHandler();
+        try {
+            market =  new MarketBuilder().build(jaxbHandler.extractXMLData(xmlFile));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        } catch (XMLException e) {
+            // TODO: Decide what to do with XMLException
+        } catch (FileNotFoundException e) {
+            // TODO: Decide what to do with FileNotFountException - if relevant
+        } catch (XMLParseException e) {
+            // TODO: Decide what to do with XMLParseException
         }
-        stores = this.market.getAllStores();
-        view.displayStores(stores);
+//        LoadXmlTask loadXmlTask = new LoadXmlTask(fullFilePath);
+//        loadXmlTask.setOnSucceeded(event -> {
+//            try {
+//                this.market = loadXmlTask.get();
+//            } catch (InterruptedException | ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//            view.fileLoadedSuccessfully();
+//            view.showMainMenu();
+//        });
+//        loadXmlTask.setOnFailed(event -> {
+//            Throwable exception = loadXmlTask.getException();
+//            if (exception instanceof ValidationException) {
+//                view.displayError(exception.getMessage());
+//            }
+//            else if (exception instanceof XMLParseException || exception instanceof XMLException || exception instanceof FileNotFoundException) {
+//                view.displayError("File Not Found");
+//            } else {
+//                view.displayError("Couldn't Parse XML due to unknown error:" + exception.getMessage() + System.lineSeparator());
+//            }
+//        });
+//        this.bindTaskToUIComponents(loadXmlTask);
+//        new Thread(loadXmlTask).start();
     }
 
-    public void loadXMLDataToUI() {
-        String xmlPath = view.promptUserFilePath();
-        loadXMLData(xmlPath);
-    }
-
-    public void loadXMLData(String fullFilePath) {
-
-        LoadXmlTask loadXmlTask = new LoadXmlTask(fullFilePath);
-        loadXmlTask.setOnSucceeded(event -> {
-            try {
-                this.market = loadXmlTask.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-            view.fileLoadedSuccessfully();
-            view.showMainMenu();
-        });
-        loadXmlTask.setOnFailed(event -> {
-            Throwable exception = loadXmlTask.getException();
-            if (exception instanceof ValidationException) {
-                view.displayError(exception.getMessage());
-            }
-            else if (exception instanceof XMLParseException || exception instanceof XMLException || exception instanceof FileNotFoundException) {
-                view.displayError("File Not Found");
-            } else {
-                view.displayError("Couldn't Parse XML due to unknown error:" + exception.getMessage() + System.lineSeparator());
-            }
-        });
-        this.bindTaskToUIComponents(loadXmlTask);
-        new Thread(loadXmlTask).start();
-    }
-
-    private void bindTaskToUIComponents(LoadXmlTask loadXmlTask) {
-        // task message
-        view.xmlProgressStateProperty().bind(loadXmlTask.messageProperty());
-        view.xmlProgressBarProperty().bind(loadXmlTask.progressProperty());
-
-        loadXmlTask.valueProperty().addListener((observable, oldValue, newValue) -> {
-            view.xmlProgressStateProperty().unbind();
-            view.xmlProgressBarProperty().unbind();
-        });
-    }
+//    private void bindTaskToUIComponents(LoadXmlTask loadXmlTask) {
+//        // task message
+//        view.xmlProgressStateProperty().bind(loadXmlTask.messageProperty());
+//        view.xmlProgressBarProperty().bind(loadXmlTask.progressProperty());
+//
+//        loadXmlTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+//            view.xmlProgressStateProperty().unbind();
+//            view.xmlProgressBarProperty().unbind();
+//        });
+//    }
 
     public void addNewProduct(int storeId, int productId) {
         this.market.addProductToStore(storeId, productId, 0);
@@ -396,4 +411,6 @@ public class Controller {
     public List<Product> getAllProducts() {
         return this.market.getAllProducts();
     }
+
+
 }

@@ -8,11 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JaxbHandler {
     private final static String JAXB_XML_CLASSES_PACKAGE_NAME = "jaxb.generated";
@@ -27,7 +23,7 @@ public class JaxbHandler {
 
         SuperDuperMarketDescriptor sdMarketDescriptor = null;
         try {
-            sdMarketDescriptor = desrializeFrom(xmlFile);
+            sdMarketDescriptor = deserializeFrom(xmlFile);
         } catch (JAXBException ex) {
             throw new XMLException(INVALID_XML_JAXB_LOAD_MESSAGE);
         }
@@ -36,8 +32,8 @@ public class JaxbHandler {
 
 
 
-    private SuperDuperMarketDescriptor desrializeFrom(File xmlFilw) throws JAXBException {
-//        private SuperDuperMarketDescriptor desrializeFrom(InputStream inStream) throws JAXBException {
+    private SuperDuperMarketDescriptor deserializeFrom(File xmlFilw) throws JAXBException {
+//        private SuperDuperMarketDescriptor deserializeFrom(InputStream inStream) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_XML_CLASSES_PACKAGE_NAME);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         return (SuperDuperMarketDescriptor) unmarshaller.unmarshal(xmlFilw);

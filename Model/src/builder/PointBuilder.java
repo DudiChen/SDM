@@ -1,5 +1,7 @@
 package builder;
 
+import jaxb.generated.Location;
+
 import java.awt.*;
 
 public class PointBuilder implements Builder<Location, Point> {

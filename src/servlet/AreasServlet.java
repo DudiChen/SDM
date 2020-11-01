@@ -2,7 +2,6 @@ package servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import controller.Controller;
 import servlet.pojo.AreaDTO;
@@ -14,8 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +22,7 @@ public class AreasServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String uuid = body.get("uuid").getAsString();
         String xmlFileBase64 = body.get("xmlFile").getAsString();
-        String result = Controller.getInstance().loadXMLData(ServletUtils.saveFIle(xmlFileBase64));
+        String result = Controller.getInstance().loadXMLData(ServletUtils.generateFileFromBase64(xmlFileBase64));
         JsonObject reply = new JsonObject();
         reply.addProperty("message", result);
         response.getWriter().write(String.valueOf(reply));

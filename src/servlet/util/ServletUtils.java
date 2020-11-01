@@ -3,6 +3,7 @@ package servlet.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import controller.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class ServletUtils {
     public static JsonObject readRequestBodyAsJSON(HttpServletRequest request) throws IOException {
@@ -41,8 +43,21 @@ public class ServletUtils {
         return date;
     }
 
-    public static File saveFIle(final String base64) {
+    public static File generateFileFromBase64(final String base64) {
         byte[] byteFile = DatatypeConverter.parseBase64Binary(base64);
-        return new File(ServletUtils.class.getProtectionDomain().getCodeSource().getLocation() + "/area.xml");
+        try (FileOutputStream fos = new FileOutputStream("area.xml")) {
+            fos.write(byteFile);
+        } catch (IOException e) {
+            // TODO: Decide what to do in case of File IO related exception
+        }
+        File xmlFile = null;
+        try {
+            xmlFile = File.createTempFile("areaFile_" + Math.abs(new Random().nextInt() * Integer.MAX_VALUE), ".xml", null);
+            xmlFile.deleteOnExit();
+        } catch (IOException e) {
+            // TODO: Decide what to do with File IO related exception
+        }
+        return xmlFile;
+//        return new File(ServletUtils.class.getProtectionDomain().getCodeSource().getLocation() + "/area.xml");
     }
 }

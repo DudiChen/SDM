@@ -3,6 +3,7 @@ package builder;
 import entity.Discount;
 import entity.Product;
 import entity.Store;
+import jaxb.generated.SDMStore;
 
 //import java.awt.*;
 import java.util.HashMap;

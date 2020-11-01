@@ -15,19 +15,19 @@ public class Area {
     private int id;
     private Map<Integer, Store> idToStore;
     private Map<Integer, Product> idToProduct;
-    private Map<Integer, Customer> idToCustomer;
+//    private Map<Integer, Customer> idToCustomer;
     private Map<Integer, OrderInvoice> idToOrderInvoice;
 
     public Area() {
         this.idToOrderInvoice = new HashMap<>();
     }
 
-    public Area(Map<Integer, Store> idToStore, Map<Integer, Product> idToProduct, Map<Integer,Customer> idToCustomer) {
+    public Area(Map<Integer, Store> idToStore, Map<Integer, Product> idToProduct) {
         this.id = MarketUtils.generateId();
         this.idToStore = idToStore;
         this.idToProduct = idToProduct;
         this.idToOrderInvoice = new HashMap<>();
-        this.idToCustomer = idToCustomer;
+//        this.idToCustomer = idToCustomer;
     }
 
     public void addStore(Store store) {

@@ -1,6 +1,7 @@
 package builder;
 
 import entity.Product;
+import jaxb.generated.SDMItem;
 
 public class ProductBuilder implements Builder<SDMItem, Product> {
     @Override

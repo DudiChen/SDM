@@ -2,6 +2,8 @@ package builder;
 
 import entity.Product;
 import entity.Stock;
+import jaxb.generated.SDMPrices;
+import jaxb.generated.SDMSell;
 
 import java.util.Map;
 import java.util.stream.Collectors;

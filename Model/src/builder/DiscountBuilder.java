@@ -1,6 +1,7 @@
 package builder;
 
 import entity.Discount;
+import jaxb.generated.SDMDiscount;
 
 import java.util.stream.Collectors;
 
