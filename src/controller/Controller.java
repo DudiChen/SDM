@@ -33,22 +33,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Controller {
-//    private Executor executor;
-    private AtomicReference<Store> chosenStore;
+    //    private Executor executor;
     private boolean loaded = false;
     private Market market;
     private int currentCustomerId;
     private static Controller instance;
+    Map<Customer, Session> sessionToLoggedInSeller;
 
     private Controller() {
+        sessionToLoggedInSeller = Collections.synchronizedSet(new HashMap<Customer, Session>());
         this.market = new Market();
 //        this.executor = new Executor(this);
-        this.chosenStore = new AtomicReference<>();
-        registerToViewEvents();
     }
 
     public static Controller getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Controller();
         }
         return instance;
@@ -400,8 +399,8 @@ public class Controller {
         if (!isAvailable) {
             view.displayMessage(
                     String.format("%s: Not eligible %s according to current product quantity.",
-                    discount.getName(),
-                    (timesUsedDiscount > 0) ? "for another discount" : ""));
+                            discount.getName(),
+                            (timesUsedDiscount > 0) ? "for another discount" : ""));
         }
         return isAvailable;
     }
@@ -419,8 +418,7 @@ public class Controller {
             this.market.deleteProductForStore(productId, storeId);
             ApplicationContext.getInstance().navigateBack();
             this.view.onStoreIdChoice.accept(storeId);
-        }
-        catch (ValidationException | DiscountsRemovedException e) {
+        } catch (ValidationException | DiscountsRemovedException e) {
             this.view.displayMessage(e.getMessage());
         }
     }
@@ -434,7 +432,7 @@ public class Controller {
     }
 
     // ex3
-    public List<Transaction> getTransactionsForCustomer(int uuid) {
+    public List<entity.Transaction> getTransactionsForCustomer(int uuid) {
         return this.market.getCustomerById(uuid).getAllTransactions();
     }
 
@@ -447,7 +445,7 @@ public class Controller {
     public void addNewStoreToArea(int uuid, int areaId, String storeName, Point point, Map<String, Integer> productIdToPriceInNewStore, double ppk) {
         Customer customer = this.getCustomerById(uuid);
         Map<Integer, StoreProduct> stockProducts = new HashMap<>();
-        for(Map.Entry<String, Integer> entry : productIdToPriceInNewStore.entrySet()) {
+        for (Map.Entry<String, Integer> entry : productIdToPriceInNewStore.entrySet()) {
             int integerId = Integer.parseInt(entry.getKey());
             StoreProduct newProduct = new StoreProduct(Controller.getInstance().getProductById(integerId), entry.getValue());
             stockProducts.put(integerId, newProduct);
@@ -509,7 +507,7 @@ public class Controller {
     public double getAverageProductPrice(int areaId, int productId) {
         return this.market.getAreaById(areaId).getAllStores().stream()
                 .map(store -> store.getPriceOfProduct(productId))
-                .mapToDouble(x->x).average().orElse(0);
+                .mapToDouble(x -> x).average().orElse(0);
     }
 
     public List<Product> getAllProductInArea(int areaId) {
@@ -523,8 +521,25 @@ public class Controller {
     public int getNumberOfStoresThatSellProduct(int areaId, int productId) {
         return this.market.getAreaById(areaId).getAllStores().stream()
                 .map(store -> store.isProductSold(productId) ? 1 : 0)
-                .mapToInt(x->x)
+                .mapToInt(x -> x)
                 .sum();
+    }
+
+    public void logInSeller(Session session, Customer customer) {
+        this.sessionToLoggedInSeller.put(customer, session);
+    }
+
+    public void logOutSeller(Session session, Customer customer) {
+        this.sessionToLoggedInSeller.remove(session);
+    }
+
+    public void notifySellers(Customer... customers) {
+        Stream.of(customers).forEach(customer -> {
+            if(this.sessionToLoggedInSeller.containsKey(customer)) {
+                Seesion loggedInSellerSession = this.sessionToLoggedInSeller.get(customer);
+                loggedInSellerSession.getBasicRemote().sendText("new notifications");
+            }
+        });
     }
 
     public int generateAreaId() {

@@ -34,6 +34,7 @@ public class StoreOrderProductsServlet extends HttpServlet {
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
         String orderId = body.get("orderId").getAsString();
+
         List<InvoiceProduct> storeProducts = Controller.getInstance()
                 .getAllProductsInStoreOrder(Integer.parseInt(areaId), Integer.parseInt(storeId), Integer.parseInt(orderId));
         List<ProductInOrderDetailsDTO> productInStoreDTOs = storeProducts.stream().map(ProductInOrderDetailsDTO::new).collect(Collectors.toList());

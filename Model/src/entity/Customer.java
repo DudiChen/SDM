@@ -3,6 +3,7 @@ package entity;
 import java.awt.*;
 
 public class Customer {
+    private Role role;
     private int id;
     private String name;
     private Point location;
@@ -10,9 +11,10 @@ public class Customer {
     private double averageOrderCost = 0;
     private double averageShipmentCost = 0;
 
-    public Customer(int id, String name, Point location) {  //, int totalOrders, double averageOrderCost, double averageShipmentCost) {
+    public Customer(int id, String name, Point location, Role role) {  //, int totalOrders, double averageOrderCost, double averageShipmentCost) {
         this.id = id;
         this.name = name;
+        this.role = role;
         this.location = location;
 //        this.totalOrders = totalOrders;
 //        this.averageOrderCost = averageOrderCost;
@@ -57,4 +59,30 @@ public class Customer {
     public String toString() {
         return this.id + ": " + this.name;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public enum Role {
+        SELLER("Seller"),
+        CONSUMER("Consumer");
+
+        private final String name;
+
+        private Role(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        @Override
+        public String toString() {
+            return this.getName();
+        }
+
+    }
+
 }
