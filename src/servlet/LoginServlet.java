@@ -25,8 +25,7 @@ public class LoginServlet extends HttpServlet {
         } else {
 
             String ssid = request.getSession().getId();
-            Controller.addSessionID(ssid, customer.getId());
-            reply.addProperty("role", customer.getRole());
+            reply.addProperty("role", customer.getRole().getName().toLowerCase());
             reply.addProperty("ssid", ssid);
             reply.addProperty("uuid", Integer.toString(customer.getId()));
         }

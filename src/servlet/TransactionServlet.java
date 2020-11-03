@@ -32,7 +32,7 @@ public class TransactionServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uuid = request.getParameter("uuid");
-        List<Transaction> transactions = Controller.getInstance().getTransactionsForCustomer(Integer.parseInt(uuid));
+        List<entity.Transaction> transactions = Controller.getInstance().getTransactionsForCustomer(Integer.parseInt(uuid));
         List<TransactionDTO> transactionDTOs = transactions.stream().map(TransactionDTO::new).collect(Collectors.toList());
         String reply = "";
         Gson gson = new Gson();

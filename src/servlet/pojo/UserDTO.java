@@ -7,7 +7,7 @@ public class UserDTO {
     String name;
 
     public UserDTO(Customer customer) {
-        this.role = customer.getRole();
+        this.role = customer.getRole().getName().toLowerCase();
         this.name = customer.getName();
     }
 }

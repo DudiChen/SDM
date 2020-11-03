@@ -64,6 +64,7 @@ public class StoreOrdersServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
+
         List<OrderInvoice> orderInvoices = Controller.getInstance().getAllOrdersForStore(Integer.parseInt(areaId), Integer.parseInt(storeId));
         List<StoreOrderDTO> storeOrderDTOs = orderInvoices.stream().map(StoreOrderDTO::new).collect(Collectors.toList());
         String reply = "";

@@ -36,7 +36,8 @@ public class StoreProductDiscountsServlet extends HttpServlet {
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
         String productId = body.get("productId").getAsString();
-        List<Discount> discountList = Controller.getInstance().getDiscountsInStoreByProductId(areaId, storeId, productId);
+        List<Discount> discountList = Controller.getInstance().getDiscountsInStoreByProductId(Integer.parseInt(areaId)
+                , Integer.parseInt(storeId), Integer.parseInt(productId));
         List<DiscountDTO> discountDTOS = discountList.stream().map(DiscountDTO::new).collect(Collectors.toList());
         String reply = "";
         Gson gson = new Gson();
