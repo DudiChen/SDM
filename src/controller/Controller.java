@@ -33,22 +33,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Controller {
-//    private Executor executor;
-    private AtomicReference<Store> chosenStore;
+    //    private Executor executor;
     private boolean loaded = false;
     private Market market;
     private int currentCustomerId;
     private static Controller instance;
+    Map<Customer, Session> sessionToLoggedInSeller;
 
     private Controller() {
+        sessionToLoggedInSeller = Collections.synchronizedSet(new HashMap<Customer, Session>());
         this.market = new Market();
 //        this.executor = new Executor(this);
-        this.chosenStore = new AtomicReference<>();
-        registerToViewEvents();
     }
 
     public static Controller getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Controller();
         }
         return instance;
@@ -63,21 +62,21 @@ public class Controller {
 //        stores = this.market.getAllStores();
 //        view.displayStores(stores);
 //    }
-    public int getProductNumberOfSales(int areaId, int productId) {
-        return this.market.getAreaById(areaId).getAllStores().stream()
-                .map(Store::getTotalProductSales)
-                .sum();
-    }
-
-    public void fetchAllStoresToUI() {
-        List<Store> stores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayStores(stores);
-            return;
-        }
-        stores = this.market.getAllStores();
-        view.displayStores(stores);
-    }
+//    public int getProductNumberOfSales(int areaId, int productId) {
+//        return this.market.getAreaById(areaId).getAllStores().stream()
+//                .map(Store::getTotalProductSales)
+//                .sum();
+//    }
+//
+//    public void fetchAllStoresToUI() {
+//        List<Store> stores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayStores(stores);
+//            return;
+//        }
+//        stores = this.market.getAllStores();
+//        view.displayStores(stores);
+//    }
 
 //    public void loadXMLDataToUI() {
 //        String xmlPath = view.promptUserFilePath();
@@ -87,7 +86,7 @@ public class Controller {
     public void loadXMLData(File xmlFile) {
         JaxbHandler jaxbHandler = new JaxbHandler();
         try {
-            market =  new MarketBuilder().build(jaxbHandler.extractXMLData(xmlFile));
+            market = new MarketBuilder().build(jaxbHandler.extractXMLData(xmlFile));
         } catch (ValidationException e) {
             e.printStackTrace();
         } catch (XMLException e) {
@@ -133,34 +132,34 @@ public class Controller {
 //        });
 //    }
 
-    public void addNewProduct(int storeId, int productId) {
-        this.market.addProductToStore(storeId, productId, 0);
-        this.view.onStoreIdChoice.accept(storeId);
-    }
+//    public void addNewProduct(int storeId, int productId) {
+//        this.market.addProductToStore(storeId, productId, 0);
+//        this.view.onStoreIdChoice.accept(storeId);
+//    }
+//
+//    public void fetchAllProductsToUI() {
+//        List<Product> products = new ArrayList<>();
+//        List<Store> allStores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayProducts(products, allStores);
+//            return;
+//        }
+//        products = market.getAllProducts();
+//        allStores = market.getAllStores();
+//        view.displayProducts(products, allStores);
+//    }
 
-    public void fetchAllProductsToUI() {
-        List<Product> products = new ArrayList<>();
-        List<Store> allStores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayProducts(products, allStores);
-            return;
-        }
-        products = market.getAllProducts();
-        allStores = market.getAllStores();
-        view.displayProducts(products, allStores);
-    }
-
-
-    public void getCustomerToUI() {
-    }
-
-    private void registerToViewEvents() {
-        registerOnStoreChoice();
-        registerOnOrderPlaced();
-        registerOnOrderAccepted();
-        registerOnOrderCanceled();
-        registerOnDynamicOrder();
-    }
+//
+//    public void getCustomerToUI() {
+//    }
+//
+//    private void registerToViewEvents() {
+//        registerOnStoreChoice();
+//        registerOnOrderPlaced();
+//        registerOnOrderAccepted();
+//        registerOnOrderCanceled();
+//        registerOnDynamicOrder();
+//    }
 
     private void registerOnDynamicOrder() {
         view.onDynamicOrder = (date, customerId, productQuantityPairs) -> {
@@ -224,28 +223,28 @@ public class Controller {
         System.out.println(res);
         return Optional.of(res);
     }
+//
+//    private void registerOnOrderAccepted() {
+//        view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
+//    }
+//
+//    private void registerOnOrderCanceled() {
+//        view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
+//    }
+//
+//    private void registerOnStoreChoice() {
+//        view.onStoreIdChoice = (storeId) -> {
+//            assert false;
+//            chosenStore.set(market.getStoreById(storeId));
+//            fetchAllProductsListToUI();
+//        };
+//    }
+//
+//    private void registerOnOrderPlaced() {
+//        view.onOrderPlaced = this::makeOrderForChosenStore;
+//    }
 
-    private void registerOnOrderAccepted() {
-        view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
-    }
-
-    private void registerOnOrderCanceled() {
-        view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
-    }
-
-    private void registerOnStoreChoice() {
-        view.onStoreIdChoice = (storeId) -> {
-            assert false;
-            chosenStore.set(market.getStoreById(storeId));
-            fetchAllProductsListToUI();
-        };
-    }
-
-    private void registerOnOrderPlaced() {
-        view.onOrderPlaced = this::makeOrderForChosenStore;
-    }
-
-//    TODO::UI: Missing the Offers support from order when displaying invoice.
+    //    TODO::UI: Missing the Offers support from order when displaying invoice.
 //    TODO::UI: in the Order History, under Orders tab; the Discount offer items are not counted - need to add as "Number of items from Discounts" => use getNumberOfDiscountProducts() & getNumberOfInvoiceProducts().
 //    TODO::UI: Orders does not display customer related data
 //    TODO::UI: On Dynamic Order display; missing prompt to user about order split info before viewing multiple orders
@@ -399,8 +398,8 @@ public class Controller {
         if (!isAvailable) {
             view.displayMessage(
                     String.format("%s: Not eligible %s according to current product quantity.",
-                    discount.getName(),
-                    (timesUsedDiscount > 0) ? "for another discount" : ""));
+                            discount.getName(),
+                            (timesUsedDiscount > 0) ? "for another discount" : ""));
         }
         return isAvailable;
     }
@@ -418,8 +417,7 @@ public class Controller {
             this.market.deleteProductForStore(productId, storeId);
             ApplicationContext.getInstance().navigateBack();
             this.view.onStoreIdChoice.accept(storeId);
-        }
-        catch (ValidationException | DiscountsRemovedException e) {
+        } catch (ValidationException | DiscountsRemovedException e) {
             this.view.displayMessage(e.getMessage());
         }
     }
@@ -433,7 +431,7 @@ public class Controller {
     }
 
     // ex3
-    public List<Transaction> getTransactionsForCustomer(int uuid) {
+    public List<entity.Transaction> getTransactionsForCustomer(int uuid) {
         return this.market.getCustomerById(uuid).getAllTransactions();
     }
 
@@ -446,7 +444,7 @@ public class Controller {
     public void addNewStoreToArea(int uuid, int areaId, String storeName, Point point, Map<String, Integer> productIdToPriceInNewStore, double ppk) {
         Customer customer = this.getCustomerById(uuid);
         Map<Integer, StoreProduct> stockProducts = new HashMap<>();
-        for(Map.Entry<String, Integer> entry : productIdToPriceInNewStore.entrySet()) {
+        for (Map.Entry<String, Integer> entry : productIdToPriceInNewStore.entrySet()) {
             int integerId = Integer.parseInt(entry.getKey());
             StoreProduct newProduct = new StoreProduct(Controller.getInstance().getProductById(integerId), entry.getValue());
             stockProducts.put(integerId, newProduct);
@@ -508,7 +506,7 @@ public class Controller {
     public double getAverageProductPrice(int areaId, int productId) {
         return this.market.getAreaById(areaId).getAllStores().stream()
                 .map(store -> store.getPriceOfProduct(productId))
-                .mapToDouble(x->x).average().orElse(0);
+                .mapToDouble(x -> x).average().orElse(0);
     }
 
     public List<Product> getAllProductInArea(int areaId) {
@@ -522,7 +520,24 @@ public class Controller {
     public int getNumberOfStoresThatSellProduct(int areaId, int productId) {
         return this.market.getAreaById(areaId).getAllStores().stream()
                 .map(store -> store.isProductSold(productId) ? 1 : 0)
-                .mapToInt(x->x)
+                .mapToInt(x -> x)
                 .sum();
+    }
+
+    public void logInSeller(Session session, Customer customer) {
+        this.sessionToLoggedInSeller.put(customer, session);
+    }
+
+    public void logOutSeller(Session session, Customer customer) {
+        this.sessionToLoggedInSeller.remove(session);
+    }
+
+    public void notifySellers(Customer... customers) {
+        Stream.of(customers).forEach(customer -> {
+            if(this.sessionToLoggedInSeller.containsKey(customer)) {
+                Seesion loggedInSellerSession = this.sessionToLoggedInSeller.get(customer);
+                loggedInSellerSession.getBasicRemote().sendText("new notifications");
+            }
+        });
     }
 }
