@@ -1,8 +1,8 @@
 package controller;
 
 import builder.AreaBuilder;
-import builder.MarketBuilder;
-import command.Executor;
+//import builder.MarketBuilder;
+//import command.Executor;
 import entity.*;
 import entity.Area;
 import entity.OrderInvoice;
@@ -55,29 +55,29 @@ public class Controller {
     }
 
     public void fetchAllStoresToUI() {
-        List<Store> stores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayStores(stores);
-            return;
-        }
-        stores = this.market.getAllStores();
-        view.displayStores(stores);
+//        List<Store> stores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayStores(stores);
+//            return;
+//        }
+//        stores = this.market.getAllStores();
+//        view.displayStores(stores);
     }
 
     public int getProductNumberOfSales(int areaId, int productId) {
         return this.market.getAreaById(areaId).getAllStores().stream()
-                .map(Store::getTotalProductSales)
-                .sum();
+                .map(store -> store.getTotalProductSales(productId))
+                .reduce(0, Integer::sum);
     }
 
-    public void fetchAllStoresToUI() {
-        List<Store> stores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayStores(stores);
-            return;
-        }
-        stores = this.market.getAllStores();
-        view.displayStores(stores);
+//    public void fetchAllStoresToUI() {
+////        List<Store> stores = new ArrayList<>();
+////        if (market == null || market.isEmpty()) {
+////            view.displayStores(stores);
+////            return;
+////        }
+////        stores = this.market.getAllStores();
+////        view.displayStores(stores);
     }
 
 //    public void loadXMLDataToUI() {
@@ -85,23 +85,19 @@ public class Controller {
 //        loadXMLData(xmlPath);
 //    }
 
-    public void loadXMLData(File xmlFile, int currentCustomerId) {
+    public String loadXMLData(File xmlFile, int currentCustomerId) {
         Area area;
         Customer currentCustomer = market.getCustomerById(currentCustomerId);
         JaxbHandler jaxbHandler = new JaxbHandler();
+        String message = "";
         try {
             int newAreaId = MarketUtils.generateIdForArea(market);
             area =  new AreaBuilder(newAreaId).build(jaxbHandler.extractXMLData(xmlFile));
             market.addArea(area);
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        } catch (XMLException e) {
-            // TODO: Decide what to do with XMLException
-        } catch (FileNotFoundException e) {
-            // TODO: Decide what to do with FileNotFountException - if relevant
-        } catch (XMLParseException e) {
-            // TODO: Decide what to do with XMLParseException
+        } catch (ValidationException | FileNotFoundException | XMLException | XMLParseException e) {
+            message = e.getMessage();
         }
+        return message;
 //        LoadXmlTask loadXmlTask = new LoadXmlTask(fullFilePath);
 //        loadXmlTask.setOnSucceeded(event -> {
 //            try {
@@ -231,23 +227,23 @@ public class Controller {
     }
 
     private void registerOnOrderAccepted() {
-        view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
+        // view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
     }
 
     private void registerOnOrderCanceled() {
-        view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
+        // view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
     }
 
     private void registerOnStoreChoice() {
-        view.onStoreIdChoice = (storeId) -> {
-            assert false;
-            chosenStore.set(market.getStoreById(storeId));
-            fetchAllProductsListToUI();
-        };
+//        view.onStoreIdChoice = (storeId) -> {
+//        assert false;
+//        chosenStore.set(market.getStoreById(storeId));
+//        fetchAllProductsListToUI();
+ //       };
     }
 
     private void registerOnOrderPlaced() {
-        view.onOrderPlaced = this::makeOrderForChosenStore;
+        // view.onOrderPlaced = this::makeOrderForChosenStore;
     }
 
 //    TODO::UI: Missing the Offers support from order when displaying invoice.

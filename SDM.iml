@@ -24,5 +24,6 @@
     <orderEntry type="library" scope="PROVIDED" name="gson-2.1" level="project" />
     <orderEntry type="library" name="tomcat-catalina-8.5.51" level="project" />
     <orderEntry type="module" module-name="Model" />
+    <orderEntry type="library" name="javax.websocket-api-1.1" level="project" />
   </component>
 </module>

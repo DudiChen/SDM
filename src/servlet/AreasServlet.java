@@ -22,6 +22,7 @@ public class AreasServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String uuid = body.get("uuid").getAsString();
         String xmlFileBase64 = body.get("xmlFile").getAsString();
+        // TODO: How does the client handles the "message" property? should valid state be 'success' or empty?
         String result = Controller.getInstance().loadXMLData(ServletUtils.generateFileFromBase64(xmlFileBase64), Integer.parseInt(uuid));
         JsonObject reply = new JsonObject();
         reply.addProperty("message", result);
