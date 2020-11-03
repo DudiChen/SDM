@@ -34,7 +34,7 @@ public class StoreOrdersServlet extends HttpServlet {
 
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
-        Type productsMapType = new TypeToken<HashMap<String, Integer>() {
+        Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
         Gson gson = new Gson();
         // maps can be empty

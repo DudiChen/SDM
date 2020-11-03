@@ -22,6 +22,7 @@ import jaxb.JaxbHandler;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.transaction.Transaction;
+import javax.websocket.Session;
 import javax.xml.bind.ValidationException;
 import java.awt.*;
 import java.io.*;
@@ -41,7 +42,7 @@ public class Controller {
     Map<Customer, Session> sessionToLoggedInSeller;
 
     private Controller() {
-        sessionToLoggedInSeller = Collections.synchronizedSet(new HashMap<Customer, Session>());
+        sessionToLoggedInSeller = Collections.synchronizedMap(new HashMap<Customer, Session>());
         this.market = new Market();
 //        this.executor = new Executor(this);
     }
