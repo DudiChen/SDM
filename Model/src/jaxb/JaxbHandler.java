@@ -32,11 +32,11 @@ public class JaxbHandler {
 
 
 
-    private SuperDuperMarketDescriptor deserializeFrom(File xmlFilw) throws JAXBException {
+    private SuperDuperMarketDescriptor deserializeFrom(File xmlFile) throws JAXBException {
 //        private SuperDuperMarketDescriptor deserializeFrom(InputStream inStream) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_XML_CLASSES_PACKAGE_NAME);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        return (SuperDuperMarketDescriptor) unmarshaller.unmarshal(xmlFilw);
+        return (SuperDuperMarketDescriptor) unmarshaller.unmarshal(xmlFile);
     }
 }
 

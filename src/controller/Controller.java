@@ -15,10 +15,10 @@ import exception.OrderValidationException;
 import exception.XMLException;
 import javafx.util.Pair;
 import jaxb.JaxbHandler;
-import view.ApplicationContext;
-import view.View;
-import view.menu.item.CustomerMapElement;
-import view.menu.item.StoreMapElement;
+//import view.ApplicationContext;
+//import view.View;
+//import view.menu.item.CustomerMapElement;
+//import view.menu.item.StoreMapElement;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.transaction.Transaction;
@@ -53,40 +53,45 @@ public class Controller {
         return instance;
     }
 
-//    public void fetchAllStoresToUI() {
-//        List<Store> stores = new ArrayList<>();
-//        if (market == null || market.isEmpty()) {
-//            view.displayStores(stores);
-//            return;
-//        }
-//        stores = this.market.getAllStores();
-//        view.displayStores(stores);
-//    }
-//    public int getProductNumberOfSales(int areaId, int productId) {
-//        return this.market.getAreaById(areaId).getAllStores().stream()
-//                .map(Store::getTotalProductSales)
-//                .sum();
-//    }
-//
-//    public void fetchAllStoresToUI() {
-//        List<Store> stores = new ArrayList<>();
-//        if (market == null || market.isEmpty()) {
-//            view.displayStores(stores);
-//            return;
-//        }
-//        stores = this.market.getAllStores();
-//        view.displayStores(stores);
-//    }
+    public void fetchAllStoresToUI() {
+        List<Store> stores = new ArrayList<>();
+        if (market == null || market.isEmpty()) {
+            view.displayStores(stores);
+            return;
+        }
+        stores = this.market.getAllStores();
+        view.displayStores(stores);
+    }
+
+    public int getProductNumberOfSales(int areaId, int productId) {
+        return this.market.getAreaById(areaId).getAllStores().stream()
+                .map(Store::getTotalProductSales)
+                .sum();
+    }
+
+    public void fetchAllStoresToUI() {
+        List<Store> stores = new ArrayList<>();
+        if (market == null || market.isEmpty()) {
+            view.displayStores(stores);
+            return;
+        }
+        stores = this.market.getAllStores();
+        view.displayStores(stores);
+    }
 
 //    public void loadXMLDataToUI() {
 //        String xmlPath = view.promptUserFilePath();
 //        loadXMLData(xmlPath);
 //    }
 
-    public void loadXMLData(File xmlFile) {
+    public void loadXMLData(File xmlFile, int currentCustomerId) {
+        Area area;
+        Customer currentCustomer = market.getCustomerById(currentCustomerId);
         JaxbHandler jaxbHandler = new JaxbHandler();
         try {
-            market = new MarketBuilder().build(jaxbHandler.extractXMLData(xmlFile));
+            int newAreaId = MarketUtils.generateIdForArea(market);
+            area =  new AreaBuilder(newAreaId).build(jaxbHandler.extractXMLData(xmlFile));
+            market.addArea(area);
         } catch (ValidationException e) {
             e.printStackTrace();
         } catch (XMLException e) {
@@ -132,34 +137,34 @@ public class Controller {
 //        });
 //    }
 
-//    public void addNewProduct(int storeId, int productId) {
-//        this.market.addProductToStore(storeId, productId, 0);
-//        this.view.onStoreIdChoice.accept(storeId);
-//    }
-//
-//    public void fetchAllProductsToUI() {
-//        List<Product> products = new ArrayList<>();
-//        List<Store> allStores = new ArrayList<>();
-//        if (market == null || market.isEmpty()) {
-//            view.displayProducts(products, allStores);
-//            return;
-//        }
-//        products = market.getAllProducts();
-//        allStores = market.getAllStores();
-//        view.displayProducts(products, allStores);
-//    }
+    public void addNewProduct(int storeId, int productId) {
+        this.market.addProductToStore(storeId, productId, 0);
+        this.view.onStoreIdChoice.accept(storeId);
+    }
 
-//
-//    public void getCustomerToUI() {
-//    }
-//
-//    private void registerToViewEvents() {
-//        registerOnStoreChoice();
-//        registerOnOrderPlaced();
-//        registerOnOrderAccepted();
-//        registerOnOrderCanceled();
-//        registerOnDynamicOrder();
-//    }
+    public void fetchAllProductsToUI() {
+        List<Product> products = new ArrayList<>();
+        List<Store> allStores = new ArrayList<>();
+        if (market == null || market.isEmpty()) {
+            view.displayProducts(products, allStores);
+            return;
+        }
+        products = market.getAllProducts();
+        allStores = market.getAllStores();
+        view.displayProducts(products, allStores);
+    }
+
+
+    public void getCustomerToUI() {
+    }
+
+    private void registerToViewEvents() {
+        registerOnStoreChoice();
+        registerOnOrderPlaced();
+        registerOnOrderAccepted();
+        registerOnOrderCanceled();
+        registerOnDynamicOrder();
+    }
 
     private void registerOnDynamicOrder() {
         view.onDynamicOrder = (date, customerId, productQuantityPairs) -> {
@@ -223,28 +228,28 @@ public class Controller {
         System.out.println(res);
         return Optional.of(res);
     }
-//
-//    private void registerOnOrderAccepted() {
-//        view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
-//    }
-//
-//    private void registerOnOrderCanceled() {
-//        view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
-//    }
-//
-//    private void registerOnStoreChoice() {
-//        view.onStoreIdChoice = (storeId) -> {
-//            assert false;
-//            chosenStore.set(market.getStoreById(storeId));
-//            fetchAllProductsListToUI();
-//        };
-//    }
-//
-//    private void registerOnOrderPlaced() {
-//        view.onOrderPlaced = this::makeOrderForChosenStore;
-//    }
 
-    //    TODO::UI: Missing the Offers support from order when displaying invoice.
+    private void registerOnOrderAccepted() {
+        view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
+    }
+
+    private void registerOnOrderCanceled() {
+        view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
+    }
+
+    private void registerOnStoreChoice() {
+        view.onStoreIdChoice = (storeId) -> {
+            assert false;
+            chosenStore.set(market.getStoreById(storeId));
+            fetchAllProductsListToUI();
+        };
+    }
+
+    private void registerOnOrderPlaced() {
+        view.onOrderPlaced = this::makeOrderForChosenStore;
+    }
+
+//    TODO::UI: Missing the Offers support from order when displaying invoice.
 //    TODO::UI: in the Order History, under Orders tab; the Discount offer items are not counted - need to add as "Number of items from Discounts" => use getNumberOfDiscountProducts() & getNumberOfInvoiceProducts().
 //    TODO::UI: Orders does not display customer related data
 //    TODO::UI: On Dynamic Order display; missing prompt to user about order split info before viewing multiple orders
@@ -539,5 +544,9 @@ public class Controller {
                 loggedInSellerSession.getBasicRemote().sendText("new notifications");
             }
         });
+    }
+
+    public int generateAreaId() {
+        return MarketUtils.generateIdForArea(market);
     }
 }

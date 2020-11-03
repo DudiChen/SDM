@@ -22,7 +22,7 @@ public class AreasServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String uuid = body.get("uuid").getAsString();
         String xmlFileBase64 = body.get("xmlFile").getAsString();
-        String result = Controller.getInstance().loadXMLData(ServletUtils.generateFileFromBase64(xmlFileBase64));
+        String result = Controller.getInstance().loadXMLData(ServletUtils.generateFileFromBase64(xmlFileBase64), Integer.parseInt(uuid));
         JsonObject reply = new JsonObject();
         reply.addProperty("message", result);
         response.getWriter().write(String.valueOf(reply));

@@ -14,6 +14,10 @@ public class Market {
         this.idToArea = new HashMap<>();
     }
 
+    public void addArea(Area newArea) {
+        idToArea.put(newArea.getId(), newArea);
+    }
+
     public Area getAreaById(int areaId) {
         return this.idToArea.get(areaId);
     }
