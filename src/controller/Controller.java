@@ -78,7 +78,7 @@ public class Controller {
 ////        }
 ////        stores = this.market.getAllStores();
 ////        view.displayStores(stores);
-    }
+//    }
 
 //    public void loadXMLDataToUI() {
 //        String xmlPath = view.promptUserFilePath();
@@ -92,7 +92,7 @@ public class Controller {
         String message = "";
         try {
             int newAreaId = MarketUtils.generateIdForArea(market);
-            area =  new AreaBuilder(newAreaId).build(jaxbHandler.extractXMLData(xmlFile));
+            area =  new AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));
             market.addArea(area);
         } catch (ValidationException | FileNotFoundException | XMLException | XMLParseException e) {
             message = e.getMessage();
@@ -452,12 +452,12 @@ public class Controller {
             stockProducts.put(integerId, newProduct);
         }
         Stock stock = new Stock(stockProducts);
-        Store newStore = new Store(point, stock, ppk, MarketUtils.generateIdForStore(Controller.getInstance().getAreaById(areaId)), storeName, new ArrayList());
+        Store newStore = new Store(point, stock, (int)ppk, MarketUtils.generateIdForStore(Controller.getInstance().getAreaById(areaId)), storeName, areaId, customer.getName(), new HashMap<>());
         this.market.getAreaById(areaId).addStore(newStore);
     }
 
     private Area getAreaById(int areaId) {
-        this.market.getAreaById(areaId);
+        return this.market.getAreaById(areaId);
     }
 
     public List<Store> getAllStoresInArea(int areaId) {
@@ -465,11 +465,11 @@ public class Controller {
     }
 
     public List<StoreProduct> getAllProductsInStore(int areaId, int storeId) {
-        return this.market.getAreaById(areaId).getStoreById().getStock().getSoldProducts().values();
+        return new ArrayList<>(this.market.getAreaById(areaId).getStoreById(storeId).getStock().getSoldProducts().values());
     }
 
     public List<Discount> getDiscountsInStoreByProductId(int areaId, int storeId, int productId) {
-        return this.market.getAreaById(areaId).getStoreById().getDiscountsByProductId(productId);
+        return this.market.getAreaById(areaId).getStoreById(storeId).getDiscountsByProductId(productId);
     }
 
     public List<OrderInvoice> getAllOrdersForStore(int areaId, int storeId) {
@@ -487,8 +487,9 @@ public class Controller {
         this.market.getAreaById(areaId).getStoreById(storeId).addFeedback(feedback);
     }
 
+    // TODO: NOAM: Why do we init customer with (0,0) location and not get it from argument?
     public boolean addCustomer(String username, String role) {
-        Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0));
+        Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0), Customer.Role.valueOf(role));
         return this.market.addCustomer(customer);
     }
 
@@ -497,8 +498,8 @@ public class Controller {
                 .filter(customer -> customer.getName().equals(userName)).findAny().orElse(null);
     }
 
-    public String getBalanceByCustomerId(int uuid) {
-        return this.market.getCustomerById(uuid).getBalance();
+    public double getBalanceByCustomerId(int uuid) {
+        return this.market.getBalanceByCustomerId(uuid);
     }
 
     public List<Area> getAllAreas() {
@@ -506,9 +507,11 @@ public class Controller {
     }
 
     public double getAverageProductPrice(int areaId, int productId) {
-        return this.market.getAreaById(areaId).getAllStores().stream()
-                .map(store -> store.getPriceOfProduct(productId))
-                .mapToDouble(x -> x).average().orElse(0);
+        return this.market.getAreaAverageProductPrice(areaId, productId);
+    }
+
+    public double getAreaAverageOrderCost(int areaId) {
+        return this.market.getAreaAverageOrderCost(areaId);
     }
 
     public List<Product> getAllProductInArea(int areaId) {
@@ -520,10 +523,7 @@ public class Controller {
     }
 
     public int getNumberOfStoresThatSellProduct(int areaId, int productId) {
-        return this.market.getAreaById(areaId).getAllStores().stream()
-                .map(store -> store.isProductSold(productId) ? 1 : 0)
-                .mapToInt(x -> x)
-                .sum();
+        return this.market.getNumberOfStoresThatSellProduct(areaId, productId);
     }
 
     public void logInSeller(Session session, Customer customer) {

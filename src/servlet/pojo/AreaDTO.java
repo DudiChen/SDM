@@ -13,13 +13,13 @@ public class AreaDTO {
     int totalOrders;
     double avgOrderCost;
 
-    public AreaDTO(Area area) throws MarketIsEmptyException {
-        this.id = area.getId();
+    public AreaDTO(Area area) {//throws MarketIsEmptyException {
+        this.id = Integer.toString(area.getId());
         this.name = area.getName();
         this.owner = area.getOwnerName();
         this.totalProducts = area.getAllProducts().size();
         this.totalStores = area.getAllStores().size();
         this.totalOrders = area.getOrdersHistory().size();
-        this.avgOrderCost = Controller.getInstance().getAverageProductPrice(area.getId());
+        this.avgOrderCost = Controller.getInstance().getAreaAverageOrderCost(area.getId());
     }
 }

@@ -14,9 +14,13 @@ import java.util.stream.Collectors;
 public class StoreBuilder implements Builder<SDMStore, Store> {
 
     Map<Integer, Product> idToProduct;
+    int areaId;
+    String ownerName;
 
-    public StoreBuilder(Map<Integer, Product> idToProduct) {
+    public StoreBuilder(Map<Integer, Product> idToProduct, int areaId, String ownerName) {
         this.idToProduct = idToProduct;
+        this.areaId = areaId;
+        this.ownerName = ownerName;
     }
 
     @Override
@@ -27,6 +31,8 @@ public class StoreBuilder implements Builder<SDMStore, Store> {
                 source.getDeliveryPpk(),
                 source.getId(),
                 source.getName(),
+                this.areaId,
+                this.ownerName,
                 getDiscountMap(source)
         );
     }

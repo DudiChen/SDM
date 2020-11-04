@@ -45,4 +45,33 @@ public class Market {
     public List<Area> getAllAreas() {
         return new ArrayList<>(idToArea.values());
     }
+
+    public double getAreaAverageOrderCost(int areaId) {
+        return getAreaById(areaId).getAllStores().stream()
+                .map(store -> store.getOrdersHistory())
+                .flatMap(list -> list.stream())
+                .map(orderInvoice -> orderInvoice.getTotalProductsPrice())
+                .mapToDouble(x -> x)
+                .average()
+                .orElse(0);
+    }
+
+    public double getAreaAverageProductPrice(int areaId, int productId) {
+        return getAreaById(areaId).getAllStores().stream()
+                .map(store -> store.getPriceOfProduct(productId))
+                .mapToDouble(x -> x)
+                .average()
+                .orElse(0);
+    }
+
+    public int getNumberOfStoresThatSellProduct(int areaId, int productId) {
+        return this.getAreaById(areaId).getAllStores().stream()
+                .map(store -> store.isProductSold(productId) ? 1 : 0)
+                .mapToInt(x -> x)
+                .sum();
+    }
+
+    public double getBalanceByCustomerId(int uuid) {
+        return getCustomerById(uuid).getBalance();
+    }
 }

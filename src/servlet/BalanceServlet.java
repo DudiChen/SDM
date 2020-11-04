@@ -23,7 +23,8 @@ public class BalanceServlet extends HttpServlet {
         String reply = "";
         JsonObject replyJSON = new JsonObject();
         Gson gson = new Gson();
-        replyJSON.addProperty("balance", Controller.getInstance().getBalanceByCustomerId(uuid));
+        // TODO: NOAM: Do you really need balance val as String rather than double in property value?
+        replyJSON.addProperty("balance", Double.toString(Controller.getInstance().getBalanceByCustomerId(uuid)));
         reply = String.valueOf(replyJSON);
         response.getWriter().write(reply);
         response.getWriter().close();

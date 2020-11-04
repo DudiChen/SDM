@@ -6,6 +6,7 @@ public class Customer {
     private Role role;
     private int id;
     private String name;
+    private double balance;
     private Point location;
     private int totalOrders = 0;
     private double averageOrderCost = 0;
@@ -62,6 +63,10 @@ public class Customer {
 
     public Role getRole() {
         return role;
+    }
+
+    public double getBalance() {
+        return this.balance;
     }
 
     public enum Role {

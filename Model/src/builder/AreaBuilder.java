@@ -22,9 +22,11 @@ public class AreaBuilder implements Builder<SuperDuperMarketDescriptor, Area> {
     Map<Integer, Store> idToStore;
     int areaId;
     String name;
+    Customer owner;
 
-    public AreaBuilder(int newAreaId) {
+    public AreaBuilder(int newAreaId, Customer owner) {
         this.areaId = newAreaId;
+        this.owner = owner;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class AreaBuilder implements Builder<SuperDuperMarketDescriptor, Area> {
         DataValidationUtils.postProductsStoreDataValidation(idToProduct, source.getSDMStores().getSDMStore()); // Performs Products related checks in Stores
         idToStore = getIdToStore(source.getSDMStores().getSDMStore());
         name = source.getSDMZone().getName();
-        return new Area(areaId, name, idToStore, idToProduct);
+        return new Area(areaId, name, owner, idToStore, idToProduct);
     }
 
     private Map<Integer, Product> getIdToProduct(List<SDMItem> sdmItems) {
@@ -50,6 +52,6 @@ public class AreaBuilder implements Builder<SuperDuperMarketDescriptor, Area> {
     }
 
     private Map<Integer, Store> constructIdToStore(Set<SDMStore> sdmStores) {
-        return sdmStores.stream().collect(Collectors.toMap(SDMStore::getId, store -> new StoreBuilder(idToProduct).build(store)));
+        return sdmStores.stream().collect(Collectors.toMap(SDMStore::getId, store -> new StoreBuilder(idToProduct, areaId, owner.getName()).build(store)));
     }
 }

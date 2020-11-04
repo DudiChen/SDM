@@ -23,9 +23,10 @@ public class Area {
         this.idToOrderInvoice = new HashMap<>();
     }
 
-    public Area(int id, String name, Map<Integer, Store> idToStore, Map<Integer, Product> idToProduct) {
+    public Area(int id, String name, Customer owner,Map<Integer, Store> idToStore, Map<Integer, Product> idToProduct) {
         this.id = id;
         this.name = name;
+        this.owner = owner;
         this.idToStore = idToStore;
         this.idToProduct = idToProduct;
         this.idToOrderInvoice = new HashMap<>();
@@ -37,6 +38,14 @@ public class Area {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getOwnerName() {
+        return this.owner.getName();
     }
 
     public void addStore(Store store) {
@@ -140,12 +149,14 @@ public class Area {
         this.idToOrderInvoice = ordersHistory.stream().collect(Collectors.toMap(OrderInvoice::getOrderId, o -> o));
     }
 
-    public List<OrderInvoice> getOrdersHistory() throws MarketIsEmptyException {
+    public List<OrderInvoice> getOrdersHistory() {//throws MarketIsEmptyException {
         if (this.idToOrderInvoice.values().isEmpty()) {
             return new ArrayList<>();
         }
         else if(this.isEmpty()) {
-            throw new MarketIsEmptyException();
+            return new ArrayList<>();
+            // TODO: NOAM: What should we do with this exception? Is it a possible scenario in this phase?
+//            throw new MarketIsEmptyException();
         }
         return new ArrayList<>(this.idToOrderInvoice.values());
     }

@@ -16,7 +16,7 @@ public class StoreDTO {
         this.id = Integer.toString(store.getId());
         this.owner = store.getOwnerName();
         this.totalOrders = store.getOrdersHistory().size();
-        this.productsIncome = store.getTotalProductSales();
+        this.productsIncome = store.getTotalProductsIncome();
         this.shippingsIncome = store.getTotalShipmentIncome();
         this.ppk = store.getPpk();
     }

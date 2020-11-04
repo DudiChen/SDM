@@ -17,21 +17,29 @@ public class Store {
     private int ppk;
     private int id;
     private String name;
+    private int areaId;
+    private String ownerName;
     private double totalShipmentIncome;
     private Map<Integer, OrderInvoice> ordersHistory;
     private Map<Integer, List<Discount>> productIdToDiscounts;
     private List<Feedback> feedbacks;
 
-    public Store(Point point, Stock stock, int ppk, int id, String name, Map<Integer, List<Discount>> productIdToDiscounts) {
+    public Store(Point point, Stock stock, int ppk, int id, String name, int areaId, String ownerName,Map<Integer, List<Discount>> productIdToDiscounts) {
         this.location = point;
         this.stock = stock;
         this.ppk = ppk;
         this.id = id;
         this.name = name;
+        this.areaId = areaId;
+        this.ownerName = ownerName;
         this.totalShipmentIncome = 0;
         this.ordersHistory = new HashMap<>();
         this.feedbacks = new ArrayList<>();
         this.productIdToDiscounts = productIdToDiscounts;
+    }
+
+    public String getOwnerName() {
+        return this.ownerName;
     }
 
     public void addToTotalShipmentIncome(double shipmentCost) {
@@ -67,6 +75,14 @@ public class Store {
                 .filter(discountProduct -> discountProduct.getProductId() == productId)
                 .count();
         return totalSoldCount;
+    }
+
+    // TODO: DUDI: unify price type
+    public int getTotalProductsIncome() {
+        return (int)this.ordersHistory.values().stream()
+                .map(orderInvoice -> orderInvoice.getTotalProductsPrice())
+                .mapToDouble(Double::doubleValue)
+                .sum();
     }
 
     public double getPriceOfProduct(int productId) {
