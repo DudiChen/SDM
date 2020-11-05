@@ -164,18 +164,19 @@ public class Store {
     private List<Discount> matchDiscountsByProductIdQuantityPairs(Map<Integer,List<Discount>> discountsMap, List<Pair<Integer, Double>> productIdQuantityPairs) {
         List<Discount> matchingDiscounts = new ArrayList<>();
         for (Pair<Integer,Double> pair : productIdQuantityPairs) {
-            matchingDiscounts.addAll(
-                    discountsMap.get(pair.getKey()).stream()
-                    .filter(discount -> discount.isDiscountMatch(pair.getKey(), pair.getValue()))
-                    .map(discount -> {
-                        List<Discount> instancesOfDiscounts = new ArrayList<>();
-                        for (int i = 0; i < discount.discountMatchInstances(pair.getKey(), pair.getValue()); i++) {
-                            instancesOfDiscounts.add(discount);
-                        }
-                        return instancesOfDiscounts;
-                    }).flatMap(Collection::stream)
-                    .collect(Collectors.toList())
-            );
+            if (discountsMap.containsKey(pair.getKey())) {
+                List<Discount> foundDiscounts = discountsMap.get(pair.getKey()).stream()
+                        .filter(discount -> discount.isDiscountMatch(pair.getKey(), pair.getValue()))
+                        .map(discount -> {
+                            List<Discount> instancesOfDiscounts = new ArrayList<>();
+                            for (int i = 0; i < discount.discountMatchInstances(pair.getKey(), pair.getValue()); i++) {
+                                instancesOfDiscounts.add(discount);
+                            }
+                            return instancesOfDiscounts;
+                        }).flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+                matchingDiscounts.addAll(foundDiscounts);
+            }
         }
 
         return matchingDiscounts;
