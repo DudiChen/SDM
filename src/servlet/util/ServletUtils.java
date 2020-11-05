@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import entity.Discount;
 import controller.Controller;
+import entity.Product;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class ServletUtils {
@@ -65,5 +68,19 @@ public class ServletUtils {
     public static String parseDiscountOperator(Discount.DiscountOperator operator) {
         String withoutMakaf = operator.toString().replace('-', ' ').toLowerCase();
         return Character.toUpperCase(withoutMakaf.charAt(0)) + withoutMakaf.substring(1);
+    }
+
+    public static Map<Integer, Double> productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(String areaId, Map<String, Integer> productIdToQuantity) {
+        Map<Integer, Double> productIdToQuantity2 = new HashMap<>();
+        for(Map.Entry<String, Integer> pair: productIdToQuantity.entrySet()) {
+            double quantity = pair.getValue();
+            Product product = Controller.getInstance().getAreaProductById(Integer.parseInt(areaId), Integer.parseInt(pair.getKey()));
+            if (product.getPurchaseMethod() == Product.PurchaseMethod.WEIGHT) {
+                // by grams
+                quantity = pair.getValue() / 1000;
+            }
+            productIdToQuantity2.put(product.getId(), quantity);
+        }
+        return productIdToQuantity2;
     }
 }

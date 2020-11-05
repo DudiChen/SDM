@@ -513,8 +513,8 @@ public class Controller {
         this.loggedInSellerToSession.put(customer, session);
     }
 
-    public void logOutSeller(Session session, Customer customer) {
-        this.loggedInSellerToSession.remove(session);
+    public void logOutSeller(Customer customer) {
+        this.loggedInSellerToSession.remove(customer);
     }
 
     public void notifyLoggedInSellers(Customer... customers) {
@@ -590,5 +590,9 @@ public class Controller {
 
         this.makeOrderForStore(date, uuid, )
         // issue notifications
+    }
+
+    public List<String> getSellerNotifications(int uuid) {
+        return this.getCustomerById(uuid).getNotifications();
     }
 }

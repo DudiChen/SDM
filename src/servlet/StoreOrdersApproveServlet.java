@@ -24,13 +24,9 @@ import java.util.*;
 public class StoreOrdersApproveServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        int areaId = body.get("areaId").getAsInt();
-        int storeId = body.get("storeId").getAsInt();
-        int uuid = body.get("uuid").getAsInt();
-        // TODO: NOAM: Add date from UI
-        String dateString = body.get("date").getAsString();
-        Date date = ServletUtils.formatStringToDate(dateString);
-
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
+        String uuid = body.get("uuid").getAsString();
         Gson gson = new Gson();
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
@@ -39,7 +35,9 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
         // TODO: next method should perform notifications and
-        Controller.getInstance().performOrderForStore(uuid, areaId, storeId, date, discountNameToProductIdInOffer, productIdToQuantity);
+        Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity)
+        Controller.getInstance().performOrderForStore(uuid, areaId, storeId, date, discountNameToProductIdInOffer, productIdToQuantity2);
+//        Controller.getInstance().approveOrderForStore(uuid, areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity2);
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }

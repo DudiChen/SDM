@@ -39,7 +39,7 @@ public class PushSocket {
     public void close(@PathParam("uuid") String uuid, Session session) {
         Customer customer = Controller.getInstance().getCustomerById(Integer.parseInt(uuid));
         if (customer.getRole().equals(Customer.Role.SELLER)) {
-            Controller.getInstance().logOutSeller(session, customer);
+            Controller.getInstance().logOutSeller(customer);
         }
     }
 }

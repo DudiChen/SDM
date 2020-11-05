@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
@@ -13,11 +14,13 @@ public class Customer {
     private double averageOrderCost = 0;
     private double averageShipmentCost = 0;
     List<Transaction> transactionHistory;
+    List<String> notifications;
 
     public Customer(int id, String name, Point location, Role role) {  //, int totalOrders, double averageOrderCost, double averageShipmentCost) {
         this.id = id;
         this.name = name;
         this.role = role;
+        this.notifications = new ArrayList<>();
         this.location = location;
 //        this.totalOrders = totalOrders;
 //        this.averageOrderCost = averageOrderCost;
@@ -80,6 +83,10 @@ public class Customer {
         return this.transactionHistory;
     }
 
+    public void addNotification(String notification) {
+        this.notifications.add(notification);
+    }
+
     public enum Role {
         SELLER("Seller"),
         CONSUMER("Consumer");
@@ -101,4 +108,7 @@ public class Customer {
 
     }
 
+    public List<String> getNotifications() {
+        return notifications;
+    }
 }
