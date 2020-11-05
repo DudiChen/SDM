@@ -35,8 +35,8 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         }.getType();
         Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
-        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
-        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
+        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsJsonObject(), discountsMapType);
+        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsJsonObject(), productsMapType);
         // TODO: next method should perform notifications and
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
         int orderId = 0;

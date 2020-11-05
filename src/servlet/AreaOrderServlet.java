@@ -35,7 +35,7 @@ public class AreaOrderServlet {
         Gson gson = new Gson();
         Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
-        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
+        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsJsonObject(), productsMapType);
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
 
         String reply = "";

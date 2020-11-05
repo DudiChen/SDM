@@ -39,8 +39,8 @@ public class StoreOrdersServlet extends HttpServlet {
         Gson gson = new Gson();
         // maps can be empty
         // in the first call of a consumer it will defenatly be empty
-        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
-        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
+        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsJsonObject(), discountsMapType);
+        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsJsonObject(), productsMapType);
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
 
         List<Discount> availableDiscounts = Controller.getInstance().getAvailableDiscounts(Integer.parseInt(areaId), Integer.parseInt(storeId), discountNameToProductIdInOffer, productIdToQuantity2);
@@ -53,7 +53,7 @@ public class StoreOrdersServlet extends HttpServlet {
             String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
             replyJSON.addProperty("discounts", availableDiscountsStr);
         }
-        replyJSON.addProperty("isValid", isValid);
+        replyJSON.addProperty("isValid", Boolean.toString(isValid));
         String reply = String.valueOf(replyJSON.getAsJsonObject());
         response.getWriter().write(reply);
         response.getWriter().close();

@@ -270,7 +270,9 @@ public class Controller {
         List<Pair<Integer, Double>> productIdQuantityPairs = productIdToQuantity.entrySet().stream()
                 .map(entry -> new Pair<>(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-        List<Discount> allMatchingDiscounts = this.market.getAreaById(areaId).getStoreById(storeId).getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
+        List<Discount> allMatchingDiscounts = this.market.getAreaById(areaId)
+                .getStoreById(storeId)
+                .getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
         for (String discountName : discountNameToProductIdInOffer.keySet()) {
             OptionalInt firstFoundIndex = IntStream.range(0, allMatchingDiscounts.size()).filter(i -> allMatchingDiscounts.get(i).getName().equals(discountName)).findFirst();
             firstFoundIndex.ifPresent(index -> allMatchingDiscounts.remove(index));
