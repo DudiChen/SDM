@@ -8,6 +8,7 @@ import controller.Controller;
 import entity.Product;
 import servlet.pojo.ProductInAreaDTO;
 import servlet.pojo.StoreDTO;
+import servlet.util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,8 +27,12 @@ public class AreaProductsServlet extends HttpServlet {
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String areaId = request.getParameter("areaId");
-        String uuid = request.getParameter("uuid");
+//        String areaId = request.getParameter("areaId");
+//        String uuid = request.getParameter("uuid");
+        JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
+        String areaId = body.get("areaId").getAsString();
+        String uuid = body.get("uuid").getAsString();
+
         List<Product> productList = Controller.getInstance().getAllProductInArea(Integer.parseInt(areaId));
         List<ProductInAreaDTO> productDTOsList = productList.stream()
                 .map(product -> new ProductInAreaDTO(product, Integer.parseInt(areaId))).collect(Collectors.toList());
