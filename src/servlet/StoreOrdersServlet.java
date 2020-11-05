@@ -29,25 +29,27 @@ public class StoreOrdersServlet extends HttpServlet {
 //        String areaId = request.getParameter("areaId");
 //        String storeId = request.getParameter("storeId");
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        int areaId = body.get("areaId").getAsInt();
-        int storeId = body.get("storeId").getAsInt();
+        String areaId = body.get("areaId").getAsString();
+        String storeId = body.get("storeId").getAsString();
 
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
-        Type productsMapType = new TypeToken<HashMap<Integer, Double>>() {
+        Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
         Gson gson = new Gson();
         // maps can be empty
         // in the first call of a consumer it will defenatly be empty
         Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
-        Map<Integer, Double> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
-        List<Discount> availableDiscounts = Controller.getInstance().getAvailableDiscounts(areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity);
+        Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
+        Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
+
+        List<Discount> availableDiscounts = Controller.getInstance().getAvailableDiscounts(Integer.parseInt(areaId), Integer.parseInt(storeId), discountNameToProductIdInOffer, productIdToQuantity2);
         JsonObject replyJSON = new JsonObject();
         boolean isValid = true;
         if (availableDiscounts == null) {
             isValid = false;
         } else {
-            List<DiscountDTO> availableDiscountDTOs = availableDiscounts.stream().map(discount -> new DiscountDTO(discount, areaId)).collect(Collectors.toList());
+            List<DiscountDTO> availableDiscountDTOs = availableDiscounts.stream().map(discount -> new DiscountDTO(discount, Integer.parseInt(areaId))).collect(Collectors.toList());
             String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
             replyJSON.addProperty("discounts", availableDiscountsStr);
         }
