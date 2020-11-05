@@ -11,7 +11,6 @@
         <element id="directory" name="lib">
           <element id="library" level="project" name="gson-2.1" />
           <element id="library" level="project" name="tomcat-catalina-8.5.51" />
-          <element id="library" level="project" name="javax.websocket-api-1.1" />
         </element>
       </element>
       <element id="module-output" name="SDM" />
