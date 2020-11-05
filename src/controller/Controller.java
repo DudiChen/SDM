@@ -7,10 +7,7 @@ import entity.*;
 import entity.Area;
 import entity.OrderInvoice;
 import entity.market.Market;
-import entity.market.Market;
 import entity.market.MarketUtils;
-import exception.DiscountsRemovedException;
-import exception.MarketIsEmptyException;
 import exception.OrderValidationException;
 import exception.XMLException;
 import javafx.util.Pair;
@@ -21,15 +18,12 @@ import jaxb.JaxbHandler;
 //import view.menu.item.StoreMapElement;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.transaction.Transaction;
 import javax.websocket.Session;
 import javax.xml.bind.ValidationException;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -40,10 +34,10 @@ public class Controller {
     private Market market;
     private int currentCustomerId;
     private static Controller instance;
-    Map<Customer, Session> sessionToLoggedInSeller;
+    Map<Customer, Session> loggedInSellerToSession;
 
     private Controller() {
-        sessionToLoggedInSeller = Collections.synchronizedMap(new HashMap<Customer, Session>());
+        loggedInSellerToSession = Collections.synchronizedMap(new HashMap<Customer, Session>());
         this.market = new Market();
 //        this.executor = new Executor(this);
     }
@@ -543,23 +537,26 @@ public class Controller {
     }
 
     public void logInSeller(Session session, Customer customer) {
-        this.sessionToLoggedInSeller.put(customer, session);
+        this.loggedInSellerToSession.put(customer, session);
     }
 
     public void logOutSeller(Session session, Customer customer) {
-        this.sessionToLoggedInSeller.remove(session);
+        this.loggedInSellerToSession.remove(session);
     }
 
-    public void notifySellers(Customer... customers) {
+    public void notifyLoggedInSellers(Customer... customers) {
         Stream.of(customers).forEach(customer -> {
-            if(this.sessionToLoggedInSeller.containsKey(customer)) {
-                Session loggedInSellerSession = this.sessionToLoggedInSeller.get(customer);
+            if(this.loggedInSellerToSession.containsKey(customer)) {
+                Session loggedInSellerSession = this.loggedInSellerToSession.get(customer);
                 try {
                     loggedInSellerSession.getBasicRemote().sendText("new notifications");
                 } catch (IOException e) {
                     // TODO: Decide what to do in case of exception
                     e.printStackTrace();
                 }
+            }
+            else {
+                System.out.println("customer " + customer + " is not a logged in seller - therefore was not notified");
             }
         });
     }

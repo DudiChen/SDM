@@ -20,8 +20,12 @@ public class PushSocket {
     @OnOpen
     public void open(@PathParam("uuid") String uuid, Session session) {
         if(uuid == null) {
-            // TODO: NOAM: fix following line:
-//            session.close(CloseReason closeReason);
+            CloseReason closeReason = new CloseReason(CloseReason.CloseCodes.CANNOT_ACCEPT, "no uuid provided");
+            try {
+                session.close(closeReason);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else{
             Customer customer = Controller.getInstance().getCustomerById(Integer.parseInt(uuid));
