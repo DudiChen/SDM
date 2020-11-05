@@ -585,13 +585,15 @@ public class Controller {
         return true;
     }
 
-    public void performOrderForStore(int uuid, int areaId, int storeId, Date date, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<Integer, Double> productIdToQuantity) {
+    public int performOrderForStore(int uuid, int areaId, int storeId, Date date, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<Integer, Double> productIdToQuantity) throws OrderValidationException {
         // insert order
-        List productIdToQuantityPairsList  =  productIdToQuantity.entrySet().stream().map(entry -> new Pair(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-        List<Discount.Offer> offers =
-        // Pair<List<Pair<Integer, Double>> , List<Offer>>
-        this.makeOrderForStore(date, uuid, )
-        // issue notifications
+        List productIdToQuantityPairsList = productIdToQuantity.entrySet().stream().map(entry -> new Pair(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        List<Discount.Offer> offers = this.market.getAreaById(areaId).getStoreOfferListByDiscountNameToProductIdInOffer(storeId, discountNameToProductIdInOffer);
+         Pair<List<Pair<Integer, Double>> , List<Discount.Offer>> productQuantityPairsWithOffers = new Pair<>(productIdToQuantityPairsList, offers);
+        Area area = this.getAreaById(areaId);
+        Store store = area.getStoreById(storeId);
+        int orderId = this.makeOrderForStore(area, store, date, uuid, productQuantityPairsWithOffers);
+        return orderId;
     }
 
     public List<String> getSellerNotifications(int uuid) {

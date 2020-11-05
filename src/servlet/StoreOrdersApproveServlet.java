@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import controller.Controller;
 import entity.Discount;
+import exception.OrderValidationException;
 import servlet.pojo.StoreDTO;
 import servlet.pojo.StoreOrderDTO;
 import servlet.util.ServletUtils;
@@ -27,6 +28,8 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
         String uuid = body.get("uuid").getAsString();
+        String dateString = body.get("date").getAsString();
+        Date date = ServletUtils.formatStringToDate(dateString);
         Gson gson = new Gson();
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
@@ -35,9 +38,17 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
         // TODO: next method should perform notifications and
-        Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity)
-        Controller.getInstance().performOrderForStore(uuid, areaId, storeId, date, discountNameToProductIdInOffer, productIdToQuantity2);
-//        Controller.getInstance().approveOrderForStore(uuid, areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity2);
+        Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
+        int orderId = 0;
+        try {
+            orderId = Controller.getInstance().performOrderForStore(Integer.parseInt(uuid), Integer.parseInt(areaId), Integer.parseInt(storeId), date, discountNameToProductIdInOffer, productIdToQuantity2);
+        } catch (OrderValidationException e) {
+            e.printStackTrace();
+        }
+        String reply = "";
+        JsonObject replyJSON = new JsonObject();
+        replyJSON.addProperty("orderId", Integer.toString(orderId));
+        reply = String.valueOf(replyJSON); /
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }

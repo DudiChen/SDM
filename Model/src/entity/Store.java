@@ -181,6 +181,21 @@ public class Store {
         return matchingDiscounts;
     }
 
+    public List<Discount.Offer> getOfferListByDiscountNameToProductIdInOffer(Map<String, List<Integer>> discountNameToProductIdInOffer) {
+        List<Discount.Offer> requestedOffers = new ArrayList<>();
+        for (Map.Entry<String, List<Integer>> discountEntry : discountNameToProductIdInOffer.entrySet()) {
+            List<Discount.Offer> matchingOffers = this.productIdToDiscounts.values().stream()
+                    .flatMap(Collection::stream)
+                    .filter(discount -> discountNameToProductIdInOffer.containsKey(discountEntry.getKey()))
+                    .map(Discount::getOffers)
+                    .flatMap(Collection::stream)
+                    .filter(offer -> discountEntry.getValue().contains(offer.getProductId()))
+                    .collect(Collectors.toList());
+            requestedOffers.addAll(matchingOffers);
+        }
+        return requestedOffers;
+    }
+
     public void removeProduct(int productId) {
         this.stock.delete(productId);
     }

@@ -278,4 +278,8 @@ public class Area {
         int timesEligibleForDiscount = (int) ((quantityOrderedOfProduct - (discountProductQuantity * timesUsedDiscount)) / discountProductQuantity);
         return timesEligibleForDiscount > 0;
     }
+
+    public List<Discount.Offer> getStoreOfferListByDiscountNameToProductIdInOffer(int storeId, Map<String, List<Integer>> discountNameToProductIdInOffer) {
+        return this.idToStore.get(storeId).getOfferListByDiscountNameToProductIdInOffer(discountNameToProductIdInOffer);
+    }
 }
