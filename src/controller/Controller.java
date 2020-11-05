@@ -87,7 +87,7 @@ public class Controller {
         String message = "File uploaded successfully.";
         try {
             int newAreaId = MarketUtils.generateIdForArea(market);
-            area =  new AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));
+            area = new AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));
             market.addArea(area);
         } catch (ValidationException | FileNotFoundException | XMLException | XMLParseException e) {
             message = e.getMessage();
@@ -158,35 +158,6 @@ public class Controller {
 //        registerOnDynamicOrder();
 //    }
 
-//    private void registerOnDynamicOrder() {
-//        view.onDynamicOrder = (date, customerId, productQuantityPairs) -> {
-//            this.market.getAllStores()
-//                    .forEach(store -> {
-//                        Optional<List<Pair<Integer, Double>>> maybeOrder = findCheapestOrderForStore(store, productQuantityPairs.getKey());
-//                        if (maybeOrder.isPresent()) {
-//                            this.chosenStore.set(store);
-//                            List<Pair<Integer, Double>> orderPairs = maybeOrder.get();
-//                            try {
-//                                List<Pair<Integer, Double>> toDelete = new ArrayList<>();
-//                                for (Pair<Integer, Double> pair : productQuantityPairs.getKey()) {
-//                                    for (Pair<Integer, Double> pair1 : orderPairs) {
-//                                        if (pair.getKey() == pair1.getKey()) {
-//                                            toDelete.add(pair);
-//                                            break;
-//                                        }
-//                                    }
-//                                }
-//                                productQuantityPairs.getKey().removeAll(toDelete);
-//                                makeOrderForChosenStore(date, customerId, new Pair<>(orderPairs, productQuantityPairs.getValue()));
-//                            } catch (OrderValidationException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-//            view.displayMessage("Please Confirm / Cancel All Orders");
-//        };
-//    }
-
     private Optional<List<Pair<Integer, Double>>> findCheapestOrderForStore(Store store, List<Pair<Integer, Double>> productQuantityPairs) {
 //
 //        List<Pair<Integer, Double>> res = new ArrayList<>();
@@ -215,7 +186,7 @@ public class Controller {
 //                            });
 //                });
 //        if (res.isEmpty()) {
-            return Optional.empty();
+        return Optional.empty();
 //        }
 //        System.out.println(res);
 //        return Optional.of(res);
@@ -241,32 +212,34 @@ public class Controller {
 //        // view.onOrderPlaced = this::makeOrderForChosenStore;
 //    }
 
-//    TODO::UI: Missing the Offers support from order when displaying invoice.
+    //    TODO::UI: Missing the Offers support from order when displaying invoice.
 //    TODO::UI: in the Order History, under Orders tab; the Discount offer items are not counted - need to add as "Number of items from Discounts" => use getNumberOfDiscountProducts() & getNumberOfInvoiceProducts().
 //    TODO::UI: Orders does not display customer related data
 //    TODO::UI: On Dynamic Order display; missing prompt to user about order split info before viewing multiple orders
-    private void makeOrderForChosenStore(Date date, Integer customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
-//        StringBuilder err = new StringBuilder();
-//        List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
-//        // validate store coordinate is not the same as customer coordinate
-//        assert false;
-//        if (this.market.getCustomerById(customerId).getLocation().equals(chosenStore.get().getLocation())) {
-//            err.append("cannot make order from same coordinate as store").append(System.lineSeparator());
-//        }
-//        // validate chosen products are sold by the chosen store
-//        for (Pair<Integer, Double> productToQuantity : productQuantityPairsWithOffers.getKey()) {
-//            int productId = productToQuantity.getKey();
-//            if (!chosenStore.get().isProductSold(productId)) {
-//                err.append(market.getProductById(productId).getName()).append(" is not sold by ").append(market.getStoreById(chosenStore.get().getId()).getName()).append(System.lineSeparator());
-//            }
-//        }
-//        if (err.length() > 0) {
-//            throw new OrderValidationException(err.toString());
-//        }
-//        if (productQuantityPairsWithOffers.getKey().size() == 0) {
-//            view.showMainMenu();
-//        }
-//        int orderInvoiceId = market.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, chosenStore.get().getId()));
+    private void makeOrderForStore(Area area, Store store, Date date, Integer customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
+        StringBuilder err = new StringBuilder();
+        List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
+        // validate store coordinate is not the same as customer coordinate
+        assert false;
+        if (this.market.getCustomerById(customerId).getLocation().equals(store.getLocation())) {
+            err.append("cannot make order from same coordinate as store").append(System.lineSeparator());
+        }
+        // validate chosen products are sold by the chosen store
+        for (Pair<Integer, Double> productToQuantity : productQuantityPairsWithOffers.getKey()) {
+            int productId = productToQuantity.getKey();
+            if (!store.isProductSold(productId)) {
+                err.append(area.getProductById(productId).getName()).append(" is not sold by ").append(area.getStoreById(store.getId()).getName()).append(System.lineSeparator());
+            }
+        }
+        if (err.length() > 0) {
+            throw new OrderValidationException(err.toString());
+        }
+
+        area.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, store.getId()));
+        Customer orderingCustomer = this.getCustomerById(customerId);
+        Customer storeOwner = this.getCustomerByName(store.getOwnerName());
+        storeOwner.addNotification(orderingCustomer.getName() + " ordered from " + store.getName());
+        this.notifyLoggedInSellers(storeOwner);
 //        view.summarizeOrder(market.getOrderInvoice(orderInvoiceId));
 //    }
 //
@@ -456,7 +429,7 @@ public class Controller {
             stockProducts.put(integerId, newProduct);
         }
         Stock stock = new Stock(stockProducts);
-        Store newStore = new Store(point, stock, (int)ppk, MarketUtils.generateIdForStore(Controller.getInstance().getAreaById(areaId)), storeName, areaId, customer.getName(), new HashMap<>());
+        Store newStore = new Store(point, stock, (int) ppk, MarketUtils.generateIdForStore(Controller.getInstance().getAreaById(areaId)), storeName, areaId, customer.getName(), new HashMap<>());
         this.market.getAreaById(areaId).addStore(newStore);
     }
 
@@ -546,7 +519,7 @@ public class Controller {
 
     public void notifyLoggedInSellers(Customer... customers) {
         Stream.of(customers).forEach(customer -> {
-            if(this.loggedInSellerToSession.containsKey(customer)) {
+            if (this.loggedInSellerToSession.containsKey(customer)) {
                 Session loggedInSellerSession = this.loggedInSellerToSession.get(customer);
                 try {
                     loggedInSellerSession.getBasicRemote().sendText("new notifications");
@@ -554,8 +527,7 @@ public class Controller {
                     // TODO: Decide what to do in case of exception
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 System.out.println("customer " + customer + " is not a logged in seller - therefore was not notified");
             }
         });
@@ -580,5 +552,37 @@ public class Controller {
 
     public List<Customer> getAllCustomers() {
         return this.market.getAllCustomers();
+    }
+
+    public boolean orderFromArea(int uuid, int areaId, Date date, Map<Integer, Double> productIdToQuantity) {
+
+        List<Pair<Integer, Double>> productIdQuantityPairs = productIdToQuantity.entrySet().stream()
+                .map(entry -> new Pair<>(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+
+        Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairs = new Pair<>(productIdQuantityPairs, new ArrayList<>());
+        this.market.getAreaById(areaId).getAllStores()
+                .forEach(store -> {
+                    Optional<List<Pair<Integer, Double>>> maybeOrder = findCheapestOrderForStore(store, productQuantityPairs.getKey());
+                    if (maybeOrder.isPresent()) {
+                        List<Pair<Integer, Double>> orderPairs = maybeOrder.get();
+                        try {
+                            List<Pair<Integer, Double>> toDelete = new ArrayList<>();
+                            for (Pair<Integer, Double> pair : productQuantityPairs.getKey()) {
+                                for (Pair<Integer, Double> pair1 : orderPairs) {
+                                    if (pair.getKey() == pair1.getKey()) {
+                                        toDelete.add(pair);
+                                        break;
+                                    }
+                                }
+                            }
+                            productQuantityPairs.getKey().removeAll(toDelete);
+                            makeOrderForStore(this.market.getAreaById(areaId), store, date, uuid, new Pair<>(orderPairs, productQuantityPairs.getValue()));
+                        } catch (OrderValidationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        return true;
     }
 }
