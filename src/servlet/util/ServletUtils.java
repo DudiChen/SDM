@@ -49,18 +49,25 @@ public class ServletUtils {
 
     public static File generateFileFromBase64(final String base64) {
         byte[] byteFile = DatatypeConverter.parseBase64Binary(base64);
-        try (FileOutputStream fos = new FileOutputStream("area.xml")) {
-            fos.write(byteFile);
-        } catch (IOException e) {
-            // TODO: Decide what to do in case of File IO related exception
-        }
+//        try (FileOutputStream fos = new FileOutputStream("area.xml")) {
+//            fos.write(byteFile);
+//        } catch (IOException e) {
+//            // TODO: Decide what to do in case of File IO related exception
+//        }
         File xmlFile = null;
         try {
             xmlFile = File.createTempFile("areaFile_" + Math.abs(new Random().nextInt() * Integer.MAX_VALUE), ".xml", null);
             xmlFile.deleteOnExit();
+
         } catch (IOException e) {
             // TODO: Decide what to do with File IO related exception
         }
+        try (FileOutputStream fos = new FileOutputStream(xmlFile.getAbsoluteFile())) {
+            fos.write(byteFile);
+        } catch (IOException e) {
+            // TODO: Decide what to do in case of File IO related exception
+        }
+
         return xmlFile;
 //        return new File(ServletUtils.class.getProtectionDomain().getCodeSource().getLocation() + "/area.xml");
     }

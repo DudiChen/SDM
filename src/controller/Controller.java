@@ -51,7 +51,8 @@ public class Controller {
         String message = "File uploaded successfully.";
         try {
             int newAreaId = MarketUtils.generateIdForArea(market);
-            area = new AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));
+            area = new
+                    AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));
             market.addArea(area);
         } catch (ValidationException | FileNotFoundException | XMLException | XMLParseException e) {
             message = e.getMessage();
