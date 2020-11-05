@@ -57,6 +57,7 @@ public class Store {
                         this.stock.getSoldProducts().get(offer.getProductId()).getName(),
                         offer.getForAdditional(),
                         offer.getQuantity(),
+                        this.stock.getSoldProducts().get(offer.getProductId()).getProduct().getPurchaseMethod(),
                         offer.getRelatedDiscountName()))
                 .collect(Collectors.toList())
         );
