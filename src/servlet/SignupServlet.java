@@ -25,6 +25,7 @@ public class SignupServlet extends HttpServlet {
         if(role == null || role.isEmpty()) {
             role = "consumer";
         }
+        // TODO: add check for already available customer under the same name
         boolean isSuccessfullyAdded = Controller.getInstance().addCustomer(username, role);
         if(!isSuccessfullyAdded) {
             reply.addProperty("errorMessage", "error registering user");

@@ -29,6 +29,7 @@ public class AreaBuilder implements Builder<SuperDuperMarketDescriptor, Area> {
         this.owner = owner;
     }
 
+    // TODO: add check for existing area by name
     @Override
     public Area build(SuperDuperMarketDescriptor source) throws ValidationException {
         preliminaryDataValidation(source); // Performs all preliminary data validation checking invalid values
