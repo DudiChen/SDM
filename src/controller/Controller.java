@@ -585,9 +585,11 @@ public class Controller {
         return true;
     }
 
-    public void performOrderForStore(int uuid, int areaId, int storeId, Date date, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<String, Integer> productIdToQuantity) {
+    public void performOrderForStore(int uuid, int areaId, int storeId, Date date, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<Integer, Double> productIdToQuantity) {
         // insert order
-
+        List productIdToQuantityPairsList  =  productIdToQuantity.entrySet().stream().map(entry -> new Pair(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        List<Discount.Offer> offers =
+        // Pair<List<Pair<Integer, Double>> , List<Offer>>
         this.makeOrderForStore(date, uuid, )
         // issue notifications
     }
