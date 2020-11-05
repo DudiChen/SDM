@@ -1,5 +1,6 @@
 package controller;
 import builder.AreaBuilder;
+import com.sun.xml.internal.ws.util.StringUtils;
 import entity.*;
 import entity.Area;
 import entity.OrderInvoice;
@@ -199,7 +200,7 @@ public class Controller {
 
     // TODO: NOAM: Why do we init customer with (0,0) location and not get it from argument?
     public boolean addCustomer(String username, String role) {
-        Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0), Customer.Role.valueOf(role));
+        Customer customer = new Customer(MarketUtils.generateId(), username, new Point(0, 0), Customer.Role.valueOf(role.toUpperCase()));
         return this.market.addCustomer(customer);
     }
 
