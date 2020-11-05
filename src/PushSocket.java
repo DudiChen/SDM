@@ -2,11 +2,6 @@ import controller.Controller;
 import entity.Customer;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.OnClose;
 import javax.websocket.Session;
@@ -14,7 +9,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.CloseReason;
 
-@ServerEndpoint("/api/push/")
+@ServerEndpoint("/api/push/{uuid}")
 public class PushSocket {
 
     @OnOpen
