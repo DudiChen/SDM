@@ -12,10 +12,10 @@ public class DiscountDTO {
     List<OfferDTO> offers;
     double quantity;
 
-    public DiscountDTO(Discount discount) {
+    public DiscountDTO(Discount discount, int areaId) {
         this.name = discount.getName();
         this.type = ServletUtils.parseDiscountOperator(discount.getOperator());
-        this.offers = discount.getOffers().stream().map(OfferDTO::new).collect(Collectors.toList());
+        this.offers = discount.getOffers().stream().map(offer -> new OfferDTO(offer, areaId)).collect(Collectors.toList());
         this.quantity = discount.getQuantity();
     }
 }

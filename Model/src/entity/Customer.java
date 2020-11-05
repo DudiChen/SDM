@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.*;
+import java.util.List;
 
 public class Customer {
     private Role role;
@@ -11,6 +12,7 @@ public class Customer {
     private int totalOrders = 0;
     private double averageOrderCost = 0;
     private double averageShipmentCost = 0;
+    List<Transaction> transactionHistory;
 
     public Customer(int id, String name, Point location, Role role) {  //, int totalOrders, double averageOrderCost, double averageShipmentCost) {
         this.id = id;
@@ -67,6 +69,15 @@ public class Customer {
 
     public double getBalance() {
         return this.balance;
+    }
+
+    public void addTransaction(Transaction newTransaction) {
+        this.balance +=  newTransaction.getAmount();
+        this.transactionHistory.add(newTransaction);
+    }
+
+    public List<Transaction> getAllTransactions() {
+        return this.transactionHistory;
     }
 
     public enum Role {

@@ -31,13 +31,16 @@ public class StoreOrderProductsServlet extends HttpServlet {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        String areaId = body.get("areaId").getAsString();
-        String storeId = body.get("storeId").getAsString();
-        String orderId = body.get("orderId").getAsString();
+        int areaId = body.get("areaId").getAsInt();
+        int storeId = body.get("storeId").getAsInt();
+        int orderId = body.get("orderId").getAsInt();
 
         List<InvoiceProduct> storeProducts = Controller.getInstance()
-                .getAllProductsInStoreOrder(Integer.parseInt(areaId), Integer.parseInt(storeId), Integer.parseInt(orderId));
+                .getAllProductsInStoreOrder(areaId, storeId, orderId);
         List<ProductInOrderDetailsDTO> productInStoreDTOs = storeProducts.stream().map(ProductInOrderDetailsDTO::new).collect(Collectors.toList());
+        List<InvoiceDiscountProduct> storeDiscountProducts = Controller.getInstance()
+                .getAllDiscountProductsInStoreOrder(areaId, storeId, orderId);
+        productInStoreDTOs.addAll(storeDiscountProducts.stream().map(ProductInOrderDetailsDTO::new).collect(Collectors.toList()));
 //        String areaId = request.getParameter("areaId");
 //        String storeId = request.getParameter("storeId");
 //        String orderId = request.getParameter("orderId");

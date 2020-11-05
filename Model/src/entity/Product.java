@@ -4,7 +4,8 @@ public class Product {
 
     public enum PurchaseMethod {
         QUANTITY("Quantity"),
-        WEIGHT("Weight");
+        WEIGHT("Weight"),
+        IRRELEVANT("Irrelevant");
         private String name;
 
         PurchaseMethod(String name) {

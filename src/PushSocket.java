@@ -10,7 +10,9 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.OnClose;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import javax.websocket.CloseReason;
 
 @ServerEndpoint("/api/push/")
 public class PushSocket {
@@ -18,7 +20,8 @@ public class PushSocket {
     @OnOpen
     public void open(@PathParam("uuid") String uuid, Session session) {
         if(uuid == null) {
-            session.close(CloseReason closeReason);
+            // TODO: NOAM: fix following line:
+//            session.close(CloseReason closeReason);
         }
         else{
             Customer customer = Controller.getInstance().getCustomerById(Integer.parseInt(uuid));

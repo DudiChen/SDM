@@ -8,8 +8,9 @@ public class OfferDTO {
     double additionalCost;
     double quantity;
 
-    public OfferDTO(Discount.Offer offer) {
-        this.productName = Controller.getInstance().getProductById(offer.getProductId()).getName();
+    public OfferDTO(Discount.Offer offer, int areaId) {
+        // TODO: Need different workaround to get productName of offer
+        this.productName = Controller.getInstance().getAreaProductById(areaId, offer.getProductId()).getName();
         this.additionalCost = offer.getForAdditional();
         this.quantity = offer.getQuantity();
     }

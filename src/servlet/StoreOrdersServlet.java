@@ -47,7 +47,7 @@ public class StoreOrdersServlet extends HttpServlet {
         if (availableDiscounts == null) {
             isValid = false;
         } else {
-            List<DiscountDTO> availableDiscountDTOs = availableDiscounts.stream().map(DiscountDTO::new).collect(Collectors.toList());
+            List<DiscountDTO> availableDiscountDTOs = availableDiscounts.stream().map(discount -> new DiscountDTO(discount, areaId)).collect(Collectors.toList());
             String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
             replyJSON.addProperty("discounts", availableDiscountsStr);
         }

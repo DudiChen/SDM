@@ -74,4 +74,8 @@ public class Market {
     public double getBalanceByCustomerId(int uuid) {
         return getCustomerById(uuid).getBalance();
     }
+
+    public Product getAreaProductById(int areaId, int productId) {
+        return this.getAreaById(areaId).getProductById(productId);
+    }
 }

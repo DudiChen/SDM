@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Controller {
@@ -193,37 +194,37 @@ public class Controller {
 //    }
 
     private Optional<List<Pair<Integer, Double>>> findCheapestOrderForStore(Store store, List<Pair<Integer, Double>> productQuantityPairs) {
-
-        List<Pair<Integer, Double>> res = new ArrayList<>();
-        productQuantityPairs
-                .forEach(pair -> {
-                    this.market.getAllStores().stream()
-                            .mapToDouble(storeToCheckPriceIn -> {
-                                double price;
-                                try {
-                                    price = store.getPriceOfProduct(pair.getKey());
-                                } catch (NoSuchElementException e) {
-                                    price = Double.MAX_VALUE;
-                                }
-                                return price;
-                            })
-                            .min()
-                            .ifPresent(minPrice -> {
-                                try {
-                                    double priceInCurrentStore = store.getPriceOfProduct(pair.getKey());
-                                    if (minPrice == priceInCurrentStore) {
-                                        res.add(new Pair<>(pair.getKey(), pair.getValue()));
-                                    }
-                                } catch (NoSuchElementException e) {
-
-                                }
-                            });
-                });
-        if (res.isEmpty()) {
+//
+//        List<Pair<Integer, Double>> res = new ArrayList<>();
+//        productQuantityPairs
+//                .forEach(pair -> {
+//                    this.market.getAllStores().stream()
+//                            .mapToDouble(storeToCheckPriceIn -> {
+//                                double price;
+//                                try {
+//                                    price = store.getPriceOfProduct(pair.getKey());
+//                                } catch (NoSuchElementException e) {
+//                                    price = Double.MAX_VALUE;
+//                                }
+//                                return price;
+//                            })
+//                            .min()
+//                            .ifPresent(minPrice -> {
+//                                try {
+//                                    double priceInCurrentStore = store.getPriceOfProduct(pair.getKey());
+//                                    if (minPrice == priceInCurrentStore) {
+//                                        res.add(new Pair<>(pair.getKey(), pair.getValue()));
+//                                    }
+//                                } catch (NoSuchElementException e) {
+//
+//                                }
+//                            });
+//                });
+//        if (res.isEmpty()) {
             return Optional.empty();
-        }
-        System.out.println(res);
-        return Optional.of(res);
+//        }
+//        System.out.println(res);
+//        return Optional.of(res);
     }
 
 //    private void registerOnOrderAccepted() {
@@ -251,33 +252,33 @@ public class Controller {
 //    TODO::UI: Orders does not display customer related data
 //    TODO::UI: On Dynamic Order display; missing prompt to user about order split info before viewing multiple orders
     private void makeOrderForChosenStore(Date date, Integer customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
-        StringBuilder err = new StringBuilder();
-        List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
-        // validate store coordinate is not the same as customer coordinate
-        assert false;
-        if (this.market.getCustomerById(customerId).getLocation().equals(chosenStore.get().getLocation())) {
-            err.append("cannot make order from same coordinate as store").append(System.lineSeparator());
-        }
-        // validate chosen products are sold by the chosen store
-        for (Pair<Integer, Double> productToQuantity : productQuantityPairsWithOffers.getKey()) {
-            int productId = productToQuantity.getKey();
-            if (!chosenStore.get().isProductSold(productId)) {
-                err.append(market.getProductById(productId).getName()).append(" is not sold by ").append(market.getStoreById(chosenStore.get().getId()).getName()).append(System.lineSeparator());
-            }
-        }
-        if (err.length() > 0) {
-            throw new OrderValidationException(err.toString());
-        }
-        if (productQuantityPairsWithOffers.getKey().size() == 0) {
-            view.showMainMenu();
-        }
-        int orderInvoiceId = market.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, chosenStore.get().getId()));
-        view.summarizeOrder(market.getOrderInvoice(orderInvoiceId));
-    }
-
-    // TODO :: make an alert when dynamic order is more than 2 stores long
-    public void makeDynamicOrder() {
-        fetchAllProductsListToUI();
+//        StringBuilder err = new StringBuilder();
+//        List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
+//        // validate store coordinate is not the same as customer coordinate
+//        assert false;
+//        if (this.market.getCustomerById(customerId).getLocation().equals(chosenStore.get().getLocation())) {
+//            err.append("cannot make order from same coordinate as store").append(System.lineSeparator());
+//        }
+//        // validate chosen products are sold by the chosen store
+//        for (Pair<Integer, Double> productToQuantity : productQuantityPairsWithOffers.getKey()) {
+//            int productId = productToQuantity.getKey();
+//            if (!chosenStore.get().isProductSold(productId)) {
+//                err.append(market.getProductById(productId).getName()).append(" is not sold by ").append(market.getStoreById(chosenStore.get().getId()).getName()).append(System.lineSeparator());
+//            }
+//        }
+//        if (err.length() > 0) {
+//            throw new OrderValidationException(err.toString());
+//        }
+//        if (productQuantityPairsWithOffers.getKey().size() == 0) {
+//            view.showMainMenu();
+//        }
+//        int orderInvoiceId = market.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, chosenStore.get().getId()));
+//        view.summarizeOrder(market.getOrderInvoice(orderInvoiceId));
+//    }
+//
+//    // TODO :: make an alert when dynamic order is more than 2 stores long
+//    public void makeDynamicOrder() {
+//        fetchAllProductsListToUI();
     }
 
 //    public void makeOrder() {
@@ -323,60 +324,60 @@ public class Controller {
 //        this.view.showMainMenu();
 //    }
 
-    public Store getStoreById(int storeId) {
-        return this.market.getStoreById(storeId);
-    }
+//    public Store getStoreById(int storeId) {
+//        return this.market.getStoreById(storeId);
+//    }
 
-    public String getStoreNameByID(int storeId) {
-        return this.market.getStoreById(storeId).getName();
-    }
+//    public String getStoreNameByID(int storeId) {
+//        return this.market.getStoreById(storeId).getName();
+//    }
 
     public void saveOrderHistory() {
-        if (market.isEmpty()) { // TODO: this is a patch - the check should be if the market has the sufficient data - fix for ex2 !
-            view.displayError("Please Load XML File Before");
-            return;
-        }
-        try {
-            List<OrderInvoice> history = market.getOrdersHistory();
-            if (history.size() == 0) {
-                view.displayError("No History To Show");
-            } else {
-                String outputPath = view.promptUserFilePath();
-                try (OutputStream outputStream = new FileOutputStream(outputPath)) {
-                    ObjectOutputStream out = new ObjectOutputStream(outputStream);
-                    out.writeObject(history);
-                    view.fileLoadedSuccessfully();
-                } catch (FileNotFoundException e) {
-                    view.displayError("File Not Found");
-
-                } catch (IOException e) {
-                    view.displayError("Error While Writing To File");
-                }
-            }
-        } catch (MarketIsEmptyException e) {
-            view.displayError("Load XML First");
-        }
+//        if (market.isEmpty()) { // TODO: this is a patch - the check should be if the market has the sufficient data - fix for ex2 !
+//            view.displayError("Please Load XML File Before");
+//            return;
+//        }
+//        try {
+//            List<OrderInvoice> history = market.getOrdersHistory();
+//            if (history.size() == 0) {
+//                view.displayError("No History To Show");
+//            } else {
+//                String outputPath = view.promptUserFilePath();
+//                try (OutputStream outputStream = new FileOutputStream(outputPath)) {
+//                    ObjectOutputStream out = new ObjectOutputStream(outputStream);
+//                    out.writeObject(history);
+//                    view.fileLoadedSuccessfully();
+//                } catch (FileNotFoundException e) {
+//                    view.displayError("File Not Found");
+//
+//                } catch (IOException e) {
+//                    view.displayError("Error While Writing To File");
+//                }
+//            }
+//        } catch (MarketIsEmptyException e) {
+//            view.displayError("Load XML First");
+//        }
 
     }
 
     public void loadOrderHistory() {
-        if (market.isEmpty()) { // TODO: this is a patch - the check should be if the market has the sufficient data - fix for ex2 !
-            view.displayError("Please Load XML File Before");
-            return;
-        }
-        String inputPath = view.promptUserFilePath();
-        try (InputStream inputStream = new FileInputStream(inputPath)) {
-            ObjectInputStream in = new ObjectInputStream(inputStream);
-            List<OrderInvoice> history = (ArrayList<OrderInvoice>) in.readObject();
-            market.setOrdersHistory(history);
-            view.fileLoadedSuccessfully();
-        } catch (FileNotFoundException e) {
-            view.displayError("File Not Found");
-        } catch (IOException e) {
-            view.displayError("Error While Writing To File");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        if (market.isEmpty()) { // TODO: this is a patch - the check should be if the market has the sufficient data - fix for ex2 !
+//            view.displayError("Please Load XML File Before");
+//            return;
+//        }
+//        String inputPath = view.promptUserFilePath();
+//        try (InputStream inputStream = new FileInputStream(inputPath)) {
+//            ObjectInputStream in = new ObjectInputStream(inputStream);
+//            List<OrderInvoice> history = (ArrayList<OrderInvoice>) in.readObject();
+//            market.setOrdersHistory(history);
+//            view.fileLoadedSuccessfully();
+//        } catch (FileNotFoundException e) {
+//            view.displayError("File Not Found");
+//        } catch (IOException e) {
+//            view.displayError("Error While Writing To File");
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -391,29 +392,33 @@ public class Controller {
 //                        .collect(Collectors.toList()));
 //    }
 
-    public Product getProductById(int productId) {
-        return this.market.getProductById(productId);
+//    public Product getProductById(int productId) {
+//        return this.market.getProductById(productId);
+//    }
+
+    public Product getAreaProductById(int areaId, int productId) {
+        return this.market.getAreaProductById(areaId, productId);
     }
 
-    public boolean isAvailableDiscount(Discount discount, List<Pair<Integer, Double>> orderProducts, List<Discount> chosenDiscounts) {
-        int timesUsedDiscount = Collections.frequency(chosenDiscounts, discount);
-        boolean isAvailable = this.market.isAvailableDiscount(discount, orderProducts, timesUsedDiscount);
-        if (!isAvailable) {
-            view.displayMessage(
-                    String.format("%s: Not eligible %s according to current product quantity.",
-                            discount.getName(),
-                            (timesUsedDiscount > 0) ? "for another discount" : ""));
-        }
-        return isAvailable;
-    }
-
-    public List<Customer> getAllCustomers() {
-        return this.market.getAllCustomers();
-    }
-
-    public Customer getCustomerById(int customerId) {
-        return this.market.getCustomerById(customerId);
-    }
+//    public boolean isAvailableDiscount(Discount discount, List<Pair<Integer, Double>> orderProducts, List<Discount> chosenDiscounts) {
+//        int timesUsedDiscount = Collections.frequency(chosenDiscounts, discount);
+//        boolean isAvailable = this.market.isAvailableDiscount(discount, orderProducts, timesUsedDiscount);
+//        if (!isAvailable) {
+//            view.displayMessage(
+//                    String.format("%s: Not eligible %s according to current product quantity.",
+//                            discount.getName(),
+//                            (timesUsedDiscount > 0) ? "for another discount" : ""));
+//        }
+//        return isAvailable;
+//    }
+//
+//    public List<Customer> getAllCustomers() {
+//        return this.market.getAllCustomers();
+//    }
+//
+//    public Customer getCustomerById(int customerId) {
+//        return this.market.getCustomerById(customerId);
+//    }
 
 //    public void deleteProduct(int productId, int storeId) {
 //        try {
@@ -434,22 +439,26 @@ public class Controller {
 //    }
 
     // ex3
+    public Customer getCustomerById(int uuid) {
+        return this.market.getCustomerById(uuid);
+    }
+
     public List<entity.Transaction> getTransactionsForCustomer(int uuid) {
         return this.market.getCustomerById(uuid).getAllTransactions();
     }
 
     public void rechargeCustomerBalance(int uuid, double amount, Date date) {
-        Customer customer = Controller.getInstance().getCustomerById(uuid);
+        Customer customer = this.market.getCustomerById(uuid);
         entity.Transaction transaction = new entity.Transaction(entity.Transaction.TransactionType.RECHARGE, amount, date, customer, customer);
         this.market.getCustomerById(uuid).addTransaction(transaction);
     }
 
     public void addNewStoreToArea(int uuid, int areaId, String storeName, Point point, Map<String, Integer> productIdToPriceInNewStore, double ppk) {
-        Customer customer = this.getCustomerById(uuid);
+        Customer customer = this.market.getCustomerById(uuid);
         Map<Integer, StoreProduct> stockProducts = new HashMap<>();
         for (Map.Entry<String, Integer> entry : productIdToPriceInNewStore.entrySet()) {
             int integerId = Integer.parseInt(entry.getKey());
-            StoreProduct newProduct = new StoreProduct(Controller.getInstance().getProductById(integerId), entry.getValue());
+            StoreProduct newProduct = new StoreProduct(this.getAreaProductById(areaId, integerId), entry.getValue());
             stockProducts.put(integerId, newProduct);
         }
         Stock stock = new Stock(stockProducts);
@@ -483,8 +492,14 @@ public class Controller {
                 .findAny().get().getInvoiceProducts();
     }
 
+    public List<InvoiceDiscountProduct> getAllDiscountProductsInStoreOrder(int areaId, int storeId, int orderId) {
+        return this.market.getAreaById(areaId).getStoreById(storeId).getOrdersHistory().stream()
+                .filter(orderInvoice -> orderInvoice.getOrderId() == orderId)
+                .findAny().get().getDiscountProducts();
+    }
+
     public void addStoreFeedback(int uuid, int areaId, int storeId, int rating, String text) {
-        Feedback feedback = new Feedback(this.getCustomerById(uuid).getName(), rating, text);
+        Feedback feedback = new Feedback(this.market.getCustomerById(uuid).getName(), rating, text);
         this.market.getAreaById(areaId).getStoreById(storeId).addFeedback(feedback);
     }
 
@@ -538,8 +553,13 @@ public class Controller {
     public void notifySellers(Customer... customers) {
         Stream.of(customers).forEach(customer -> {
             if(this.sessionToLoggedInSeller.containsKey(customer)) {
-                Seesion loggedInSellerSession = this.sessionToLoggedInSeller.get(customer);
-                loggedInSellerSession.getBasicRemote().sendText("new notifications");
+                Session loggedInSellerSession = this.sessionToLoggedInSeller.get(customer);
+                try {
+                    loggedInSellerSession.getBasicRemote().sendText("new notifications");
+                } catch (IOException e) {
+                    // TODO: Decide what to do in case of exception
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -552,7 +572,16 @@ public class Controller {
         List<Pair<Integer, Double>> productIdQuantityPairs = productIdToQuantity.entrySet().stream()
                 .map(entry -> new Pair<>(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-        List<Discount> matchingDiscounts = this.market.getAreaById(areaId).getStoreById(storeId).getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
+        List<Discount> allMatchingDiscounts = this.market.getAreaById(areaId).getStoreById(storeId).getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
+        // TODO: DUDI: There was no need to take offers into consideration
+        for (String discountName : discountNameToProductIdInOffer.keySet()) {
+            OptionalInt firstFoundIndex = IntStream.range(0, allMatchingDiscounts.size()).filter(i -> allMatchingDiscounts.get(i).getName().equals(discountName)).findFirst();
+            firstFoundIndex.ifPresent(index -> allMatchingDiscounts.remove(index));
+        }
+        return allMatchingDiscounts;
+    }
 
+    public List<Customer> getAllCustomers() {
+        return this.market.getAllCustomers();
     }
 }
