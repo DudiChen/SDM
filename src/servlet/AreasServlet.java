@@ -22,7 +22,6 @@ public class AreasServlet extends HttpServlet {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
         String uuid = body.get("uuid").getAsString();
         String xmlFileBase64 = body.get("xmlFile").getAsString();
-        // TODO: How does the client handles the "message" property? should valid state be 'success' or empty?
         String result = Controller.getInstance().loadXMLData(ServletUtils.generateFileFromBase64(xmlFileBase64), Integer.parseInt(uuid));
         JsonObject reply = new JsonObject();
         reply.addProperty("message", result);
@@ -32,16 +31,10 @@ public class AreasServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject reply = new JsonObject();
-        // TODO: fetch all areas list
-        // Dummy:
         Gson gson = new Gson();
         List<AreaDTO> areasList = Controller.getInstance().getAllAreas().stream()
                 .map(AreaDTO::new)
                 .collect(Collectors.toList());
-//        List<AreaDTO> areasList = Arrays.asList(
-//                new AreaDTO("1", "Shenkin", "Noam", 30, 3, 300, 150.0),
-//                new AreaDTO("2", "Dizingoff", "Dudi", 10, 1, 100, 40.0)
-//        );
         JsonArray areasJSON = gson.toJsonTree(areasList).getAsJsonArray();
         reply.add("allAreas", areasJSON);
         response.getWriter().write(String.valueOf(reply));

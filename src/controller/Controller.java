@@ -84,7 +84,7 @@ public class Controller {
         Area area;
         Customer currentCustomer = market.getCustomerById(currentCustomerId);
         JaxbHandler jaxbHandler = new JaxbHandler();
-        String message = "";
+        String message = "File uploaded successfully.";
         try {
             int newAreaId = MarketUtils.generateIdForArea(market);
             area =  new AreaBuilder(newAreaId, currentCustomer).build(jaxbHandler.extractXMLData(xmlFile));

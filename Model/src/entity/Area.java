@@ -88,10 +88,13 @@ public class Area {
         List<InvoiceDiscountProduct> discountProducts = order.getOffersTaken().stream()
                 .map(discountOffer -> new InvoiceDiscountProduct(
                         discountOffer.getProductId(),
-                        this.idToProduct.get(discountOffer.getProductId()).getName(),
-                        discountOffer.getForAdditional(),
-                        discountOffer.getQuantity(),
-                        discountOffer.getRelatedDiscountName()))
+                                this.idToProduct.get(discountOffer.getProductId()).getName(),
+                                discountOffer.getForAdditional(),
+                                discountOffer.getQuantity(),
+                                this.idToProduct.get(discountOffer.getProductId()).getPurchaseMethod(),
+                                discountOffer.getRelatedDiscountName()
+                        )
+                )
                 .collect(Collectors.toList());
         double totalPrice = invoiceProducts.stream()
                 .map(InvoiceProduct::getTotalPrice)
@@ -130,7 +133,7 @@ public class Area {
     public void addStoreOfferPurchasesToOrderInvoice(int storeId, int orderInvoiceId, List<Discount.Offer> acceptedOffers) {
         this.getOrderInvoice(orderInvoiceId).setDiscountProducts(
                 acceptedOffers.stream()
-                .map(offer -> new InvoiceDiscountProduct(offer, this.idToProduct.get(offer.getProductId()).getName()))
+                .map(offer -> new InvoiceDiscountProduct(offer, this.idToProduct.get(offer.getProductId()).getName(), this.idToProduct.get(offer.getProductId()).getPurchaseMethod()))
                 .collect(Collectors.toList())
         );
         this.idToStore.get(storeId).setOrderDiscountProducts(orderInvoiceId, acceptedOffers);

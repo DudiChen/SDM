@@ -1,5 +1,6 @@
 package servlet.pojo;
 
+import controller.Controller;
 import entity.InvoiceDiscountProduct;
 import entity.InvoiceProduct;
 import entity.Product;
@@ -26,11 +27,10 @@ public class ProductInOrderDetailsDTO {
         this.isPartOfDiscount = false;
     }
 
-    // TODO: See if this is ok - consider making DTO for InvoiceDiscountProduct
     public ProductInOrderDetailsDTO(InvoiceDiscountProduct invoiceDiscountProduct) {
         this.id = Integer.toString(invoiceDiscountProduct.getProductId());
         this.name = invoiceDiscountProduct.getName();
-        this.purchaseMethod = "Irrelevant";
+        this.purchaseMethod = invoiceDiscountProduct.getPurchaseMethod().toString();
         this.purchasedQuantity = invoiceDiscountProduct.getQuantity();
         this.price = invoiceDiscountProduct.getAdditionalCost();
         this.totalPrice = this.price;

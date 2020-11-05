@@ -25,8 +25,6 @@ public class UsersServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject reply = new JsonObject();
-        // TODO: fetch all users list
-        // Dummy:
         List<Customer> customers = Controller.getInstance().getAllCustomers();
         List<UserDTO> userDTOs = customers.stream().map(UserDTO::new).collect(Collectors.toList());
         Gson gson = new Gson();

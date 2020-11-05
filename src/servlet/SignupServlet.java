@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import servlet.util.*;
 
-// TODO: Consider changing url to /api/user and use it both for login(GET) and signup(POST)
 @WebServlet(name = "SignupServlet", urlPatterns = {"/api/signup"})
 public class SignupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
