@@ -8,7 +8,7 @@ public class Transaction {
     private Customer issuingCustomer;
     private Customer issuedCustomer;
     private Date date;
-    private int previousBalance;
+    private double previousBalance;
 
     public Transaction(TransactionType transactionType, double amount, Date date, Customer issuingCustomer, Customer issuedCustomer) {
         this.amount = amount;
@@ -39,7 +39,7 @@ public class Transaction {
         return date;
     }
 
-    public int getPreviousBalance() {
+    public double getPreviousBalance() {
         return previousBalance;
     }
 

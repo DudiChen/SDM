@@ -134,63 +134,63 @@ public class Controller {
 //        });
 //    }
 
-    public void addNewProduct(int storeId, int productId) {
-        this.market.addProductToStore(storeId, productId, 0);
-        this.view.onStoreIdChoice.accept(storeId);
-    }
+//    public void addNewProduct(int storeId, int productId) {
+//        this.market.addProductToStore(storeId, productId, 0);
+//        this.view.onStoreIdChoice.accept(storeId);
+//    }
 
-    public void fetchAllProductsToUI() {
-        List<Product> products = new ArrayList<>();
-        List<Store> allStores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayProducts(products, allStores);
-            return;
-        }
-        products = market.getAllProducts();
-        allStores = market.getAllStores();
-        view.displayProducts(products, allStores);
-    }
+//    public void fetchAllProductsToUI() {
+//        List<Product> products = new ArrayList<>();
+//        List<Store> allStores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayProducts(products, allStores);
+//            return;
+//        }
+//        products = market.getAllProducts();
+//        allStores = market.getAllStores();
+//        view.displayProducts(products, allStores);
+//    }
 
 
-    public void getCustomerToUI() {
-    }
+//    public void getCustomerToUI() {
+//    }
 
-    private void registerToViewEvents() {
-        registerOnStoreChoice();
-        registerOnOrderPlaced();
-        registerOnOrderAccepted();
-        registerOnOrderCanceled();
-        registerOnDynamicOrder();
-    }
+//    private void registerToViewEvents() {
+//        registerOnStoreChoice();
+//        registerOnOrderPlaced();
+//        registerOnOrderAccepted();
+//        registerOnOrderCanceled();
+//        registerOnDynamicOrder();
+//    }
 
-    private void registerOnDynamicOrder() {
-        view.onDynamicOrder = (date, customerId, productQuantityPairs) -> {
-            this.market.getAllStores()
-                    .forEach(store -> {
-                        Optional<List<Pair<Integer, Double>>> maybeOrder = findCheapestOrderForStore(store, productQuantityPairs.getKey());
-                        if (maybeOrder.isPresent()) {
-                            this.chosenStore.set(store);
-                            List<Pair<Integer, Double>> orderPairs = maybeOrder.get();
-                            try {
-                                List<Pair<Integer, Double>> toDelete = new ArrayList<>();
-                                for (Pair<Integer, Double> pair : productQuantityPairs.getKey()) {
-                                    for (Pair<Integer, Double> pair1 : orderPairs) {
-                                        if (pair.getKey() == pair1.getKey()) {
-                                            toDelete.add(pair);
-                                            break;
-                                        }
-                                    }
-                                }
-                                productQuantityPairs.getKey().removeAll(toDelete);
-                                makeOrderForChosenStore(date, customerId, new Pair<>(orderPairs, productQuantityPairs.getValue()));
-                            } catch (OrderValidationException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-            view.displayMessage("Please Confirm / Cancel All Orders");
-        };
-    }
+//    private void registerOnDynamicOrder() {
+//        view.onDynamicOrder = (date, customerId, productQuantityPairs) -> {
+//            this.market.getAllStores()
+//                    .forEach(store -> {
+//                        Optional<List<Pair<Integer, Double>>> maybeOrder = findCheapestOrderForStore(store, productQuantityPairs.getKey());
+//                        if (maybeOrder.isPresent()) {
+//                            this.chosenStore.set(store);
+//                            List<Pair<Integer, Double>> orderPairs = maybeOrder.get();
+//                            try {
+//                                List<Pair<Integer, Double>> toDelete = new ArrayList<>();
+//                                for (Pair<Integer, Double> pair : productQuantityPairs.getKey()) {
+//                                    for (Pair<Integer, Double> pair1 : orderPairs) {
+//                                        if (pair.getKey() == pair1.getKey()) {
+//                                            toDelete.add(pair);
+//                                            break;
+//                                        }
+//                                    }
+//                                }
+//                                productQuantityPairs.getKey().removeAll(toDelete);
+//                                makeOrderForChosenStore(date, customerId, new Pair<>(orderPairs, productQuantityPairs.getValue()));
+//                            } catch (OrderValidationException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//            view.displayMessage("Please Confirm / Cancel All Orders");
+//        };
+//    }
 
     private Optional<List<Pair<Integer, Double>>> findCheapestOrderForStore(Store store, List<Pair<Integer, Double>> productQuantityPairs) {
 
@@ -226,25 +226,25 @@ public class Controller {
         return Optional.of(res);
     }
 
-    private void registerOnOrderAccepted() {
-        // view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
-    }
-
-    private void registerOnOrderCanceled() {
-        // view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
-    }
-
-    private void registerOnStoreChoice() {
-//        view.onStoreIdChoice = (storeId) -> {
-//        assert false;
-//        chosenStore.set(market.getStoreById(storeId));
-//        fetchAllProductsListToUI();
- //       };
-    }
-
-    private void registerOnOrderPlaced() {
-        // view.onOrderPlaced = this::makeOrderForChosenStore;
-    }
+//    private void registerOnOrderAccepted() {
+//        // view.onOrderAccepted = orderInvoiceId -> market.approveOrder(orderInvoiceId);
+//    }
+//
+//    private void registerOnOrderCanceled() {
+//        // view.onOrderCanceled = (orderInvoiceId) -> market.cancelOrder(orderInvoiceId);
+//    }
+//
+//    private void registerOnStoreChoice() {
+////        view.onStoreIdChoice = (storeId) -> {
+////        assert false;
+////        chosenStore.set(market.getStoreById(storeId));
+////        fetchAllProductsListToUI();
+// //       };
+//    }
+//
+//    private void registerOnOrderPlaced() {
+//        // view.onOrderPlaced = this::makeOrderForChosenStore;
+//    }
 
 //    TODO::UI: Missing the Offers support from order when displaying invoice.
 //    TODO::UI: in the Order History, under Orders tab; the Discount offer items are not counted - need to add as "Number of items from Discounts" => use getNumberOfDiscountProducts() & getNumberOfInvoiceProducts().
@@ -280,47 +280,51 @@ public class Controller {
         fetchAllProductsListToUI();
     }
 
-    public void makeOrder() {
-        fetchAllStoresListToUI();
-    }
+//    public void makeOrder() {
+//        fetchAllStoresListToUI();
+//    }
 
-    public void fetchAllStoresListToUI() {
-        List<Store> stores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayStoresList(stores);
-            return;
-        }
-        stores = market.getAllStores();
-        view.displayStoresList(stores);
-    }
+//    public void fetchAllStoresListToUI() {
+//        List<Store> stores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayStoresList(stores);
+//            return;
+//        }
+//        stores = market.getAllStores();
+//        view.displayStoresList(stores);
+//    }
 
-    public void fetchAllProductsListToUI() {
-        List<Product> products = new ArrayList<>();
-        List<Store> allStores = new ArrayList<>();
-        if (market == null || market.isEmpty()) {
-            view.displayProductsForStore(products, chosenStore.get());
-            return;
-        }
-        products = market.getAllProducts()
-                .stream().filter(product -> chosenStore.get().isProductSold(product.getId())).collect(Collectors.toList());
-        allStores = market.getAllStores();
-        view.displayProductsForStore(products, chosenStore.get());
-    }
+//    public void fetchAllProductsListToUI() {
+//        List<Product> products = new ArrayList<>();
+//        List<Store> allStores = new ArrayList<>();
+//        if (market == null || market.isEmpty()) {
+//            view.displayProductsForStore(products, chosenStore.get());
+//            return;
+//        }
+//        products = market.getAllProducts()
+//                .stream().filter(product -> chosenStore.get().isProductSold(product.getId())).collect(Collectors.toList());
+//        allStores = market.getAllStores();
+//        view.displayProductsForStore(products, chosenStore.get());
+//    }
+//
+//    public void fetchOrdersHistoryToUI() {
+//        try {
+//            view.showOrdersHistory(market.getOrdersHistory());
+//        } catch (MarketIsEmptyException e) {
+//            view.displayError("Please Load XML First");
+//        }
+//    }
+//
+//    public Executor getExecutor() {
+//        return executor;
+//    }
+//
+//    public void run() {
+//        this.view.showMainMenu();
+//    }
 
-    public void fetchOrdersHistoryToUI() {
-        try {
-            view.showOrdersHistory(market.getOrdersHistory());
-        } catch (MarketIsEmptyException e) {
-            view.displayError("Please Load XML First");
-        }
-    }
-
-    public Executor getExecutor() {
-        return executor;
-    }
-
-    public void run() {
-        this.view.showMainMenu();
+    public Store getStoreById(int storeId) {
+        return this.market.getStoreById(storeId);
     }
 
     public String getStoreNameByID(int storeId) {
@@ -375,20 +379,17 @@ public class Controller {
         }
     }
 
-    public Store getStoreById(int storeId) {
-        return this.market.getStoreById(storeId);
-    }
 
-    public void fetchMapToUI() {
-        this.view.showMap(
-                Stream.concat(
-                        this.market.getAllStores().stream()
-                                .map(store -> new StoreMapElement(store, view.onStoreIdChoice)),
-                        this.market.getAllCustomers().stream()
-                                .map(customer -> new CustomerMapElement(customer))
-                )
-                        .collect(Collectors.toList()));
-    }
+//    public void fetchMapToUI() {
+//        this.view.showMap(
+//                Stream.concat(
+//                        this.market.getAllStores().stream()
+//                                .map(store -> new StoreMapElement(store, view.onStoreIdChoice)),
+//                        this.market.getAllCustomers().stream()
+//                                .map(customer -> new CustomerMapElement(customer))
+//                )
+//                        .collect(Collectors.toList()));
+//    }
 
     public Product getProductById(int productId) {
         return this.market.getProductById(productId);
@@ -414,23 +415,23 @@ public class Controller {
         return this.market.getCustomerById(customerId);
     }
 
-    public void deleteProduct(int productId, int storeId) {
-        try {
-            this.market.deleteProductForStore(productId, storeId);
-            ApplicationContext.getInstance().navigateBack();
-            this.view.onStoreIdChoice.accept(storeId);
-        } catch (ValidationException | DiscountsRemovedException e) {
-            this.view.displayMessage(e.getMessage());
-        }
-    }
+//    public void deleteProduct(int productId, int storeId) {
+//        try {
+//            this.market.deleteProductForStore(productId, storeId);
+//            ApplicationContext.getInstance().navigateBack();
+//            this.view.onStoreIdChoice.accept(storeId);
+//        } catch (ValidationException | DiscountsRemovedException e) {
+//            this.view.displayMessage(e.getMessage());
+//        }
+//    }
 
-    public void changePriceForProduct(int storeId, int productId, double newPrice) {
-        this.market.changePriceForProduct(storeId, productId, newPrice);
-    }
+//    public void changePriceForProduct(int storeId, int productId, double newPrice) {
+//        this.market.changePriceForProduct(storeId, productId, newPrice);
+//    }
 
-    public List<Product> getAllProducts() {
-        return this.market.getAllProducts();
-    }
+//    public List<Product> getAllProducts() {
+//        return this.market.getAllProducts();
+//    }
 
     // ex3
     public List<entity.Transaction> getTransactionsForCustomer(int uuid) {
@@ -545,5 +546,13 @@ public class Controller {
 
     public int generateAreaId() {
         return MarketUtils.generateIdForArea(market);
+    }
+
+    public List<Discount> getAvailableDiscounts(int areaId, int storeId, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<Integer, Double> productIdToQuantity) {
+        List<Pair<Integer, Double>> productIdQuantityPairs = productIdToQuantity.entrySet().stream()
+                .map(entry -> new Pair<>(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+        List<Discount> matchingDiscounts = this.market.getAreaById(areaId).getStoreById(storeId).getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
+
     }
 }
