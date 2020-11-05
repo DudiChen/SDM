@@ -158,38 +158,38 @@ public class Controller {
 //        registerOnDynamicOrder();
 //    }
 
-    private Optional<List<Pair<Integer, Double>>> findCheapestOrderForStore(Store store, List<Pair<Integer, Double>> productQuantityPairs) {
-//
-//        List<Pair<Integer, Double>> res = new ArrayList<>();
-//        productQuantityPairs
-//                .forEach(pair -> {
-//                    this.market.getAllStores().stream()
-//                            .mapToDouble(storeToCheckPriceIn -> {
-//                                double price;
-//                                try {
-//                                    price = store.getPriceOfProduct(pair.getKey());
-//                                } catch (NoSuchElementException e) {
-//                                    price = Double.MAX_VALUE;
-//                                }
-//                                return price;
-//                            })
-//                            .min()
-//                            .ifPresent(minPrice -> {
-//                                try {
-//                                    double priceInCurrentStore = store.getPriceOfProduct(pair.getKey());
-//                                    if (minPrice == priceInCurrentStore) {
-//                                        res.add(new Pair<>(pair.getKey(), pair.getValue()));
-//                                    }
-//                                } catch (NoSuchElementException e) {
-//
-//                                }
-//                            });
-//                });
-//        if (res.isEmpty()) {
-            return Optional.empty();
-//        }
-//        System.out.println(res);
-//        return Optional.of(res);
+    private Optional<List<Pair<Integer, Double>>> findCheapestOrderForStore(Area area, Store store, List<Pair<Integer, Double>> productQuantityPairs) {
+
+        List<Pair<Integer, Double>> res = new ArrayList<>();
+        productQuantityPairs
+                .forEach(pair -> {
+                    area.getAllStores().stream()
+                            .mapToDouble(storeToCheckPriceIn -> {
+                                double price;
+                                try {
+                                    price = store.getPriceOfProduct(pair.getKey());
+                                } catch (NoSuchElementException e) {
+                                    price = Double.MAX_VALUE;
+                                }
+                                return price;
+                            })
+                            .min()
+                            .ifPresent(minPrice -> {
+                                try {
+                                    double priceInCurrentStore = store.getPriceOfProduct(pair.getKey());
+                                    if (minPrice == priceInCurrentStore) {
+                                        res.add(new Pair<>(pair.getKey(), pair.getValue()));
+                                    }
+                                } catch (NoSuchElementException e) {
+
+                                }
+                            });
+                });
+        if (res.isEmpty()) {
+        return Optional.empty();
+        }
+        System.out.println(res);
+        return Optional.of(res);
     }
 
 //    private void registerOnOrderAccepted() {
@@ -212,11 +212,11 @@ public class Controller {
 //        // view.onOrderPlaced = this::makeOrderForChosenStore;
 //    }
 
-//    TODO::UI: Missing the Offers support from order when displaying invoice.
+    //    TODO::UI: Missing the Offers support from order when displaying invoice.
 //    TODO::UI: in the Order History, under Orders tab; the Discount offer items are not counted - need to add as "Number of items from Discounts" => use getNumberOfDiscountProducts() & getNumberOfInvoiceProducts().
 //    TODO::UI: Orders does not display customer related data
 //    TODO::UI: On Dynamic Order display; missing prompt to user about order split info before viewing multiple orders
-    private void makeOrderForStore(Area area, Store store, Date date, Integer customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
+    private int makeOrderForStore(Area area, Store store, Date date, Integer customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
         StringBuilder err = new StringBuilder();
         List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
         // validate store coordinate is not the same as customer coordinate
@@ -235,11 +235,12 @@ public class Controller {
             throw new OrderValidationException(err.toString());
         }
 
-        area.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, store.getId()));
+        int orderId = area.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, store.getId()));
         Customer orderingCustomer = this.getCustomerById(customerId);
         Customer storeOwner = this.getCustomerByName(store.getOwnerName());
         storeOwner.addNotification(orderingCustomer.getName() + " ordered from " + store.getName());
         this.notifyLoggedInSellers(storeOwner);
+        return orderId;
 //        view.summarizeOrder(market.getOrderInvoice(orderInvoiceId));
 //    }
 //
@@ -431,9 +432,15 @@ public class Controller {
         Stock stock = new Stock(stockProducts);
         Store newStore = new Store(point, stock, (int) ppk, MarketUtils.generateIdForStore(Controller.getInstance().getAreaById(areaId)), storeName, areaId, customer.getName(), new HashMap<>());
         this.market.getAreaById(areaId).addStore(newStore);
+
+
+        Customer areaOwner = this.getCustomerByName(this.getAreaById(areaId).getOwnerName());
+        Customer consumer = this.getCustomerById(uuid);
+        areaOwner.addNotification(consumer.getName() + " opened a new store in your area");
+        this.notifyLoggedInSellers(areaOwner);
     }
 
-    private Area getAreaById(int areaId) {
+    public Area getAreaById(int areaId) {
         return this.market.getAreaById(areaId);
     }
 
@@ -468,6 +475,10 @@ public class Controller {
     public void addStoreFeedback(int uuid, int areaId, int storeId, int rating, String text) {
         Feedback feedback = new Feedback(this.market.getCustomerById(uuid).getName(), rating, text);
         this.market.getAreaById(areaId).getStoreById(storeId).addFeedback(feedback);
+        Customer storeOwner = this.getCustomerByName(this.getAreaById(areaId).getStoreById(storeId).getOwnerName());
+        Customer consumer = this.getCustomerById(uuid);
+        storeOwner.addNotification(consumer.getName() + " gave a feedback on your store");
+        this.notifyLoggedInSellers(storeOwner);
     }
 
     // TODO: NOAM: Why do we init customer with (0,0) location and not get it from argument?
@@ -553,44 +564,40 @@ public class Controller {
         return this.market.getAllCustomers();
     }
 
-    public boolean orderFromArea(int uuid, int areaId, Date date, Map<Integer, Double> productIdToQuantity) {
+    public List<Integer> orderFromArea(int uuid, int areaId, Date date, Map<Integer, Double> productIdToQuantity) throws OrderValidationException {
 
         List<Pair<Integer, Double>> productIdQuantityPairs = productIdToQuantity.entrySet().stream()
                 .map(entry -> new Pair<>(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
         Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairs = new Pair<>(productIdQuantityPairs, new ArrayList<>());
-        this.market.getAreaById(areaId).getAllStores()
-                .forEach(store -> {
-                    Optional<List<Pair<Integer, Double>>> maybeOrder = findCheapestOrderForStore(store, productQuantityPairs.getKey());
-                    if (maybeOrder.isPresent()) {
-                        List<Pair<Integer, Double>> orderPairs = maybeOrder.get();
-                        try {
-                            List<Pair<Integer, Double>> toDelete = new ArrayList<>();
-                            for (Pair<Integer, Double> pair : productQuantityPairs.getKey()) {
-                                for (Pair<Integer, Double> pair1 : orderPairs) {
-                                    if (pair.getKey() == pair1.getKey()) {
-                                        toDelete.add(pair);
-                                        break;
-                                    }
-                                }
-                            }
-                            productQuantityPairs.getKey().removeAll(toDelete);
-                            makeOrderForStore(this.market.getAreaById(areaId), store, date, uuid, new Pair<>(orderPairs, productQuantityPairs.getValue()));
-                        } catch (OrderValidationException e) {
-                            e.printStackTrace();
+        List<Integer> orderIds = new ArrayList<>();
+        for(Store store : this.market.getAreaById(areaId).getAllStores()) {
+            Optional<List<Pair<Integer, Double>>> maybeOrder = findCheapestOrderForStore(this.getAreaById(areaId), store, productQuantityPairs.getKey());
+            if (maybeOrder.isPresent()) {
+                List<Pair<Integer, Double>> orderPairs = maybeOrder.get();
+                List<Pair<Integer, Double>> toDelete = new ArrayList<>();
+                for (Pair<Integer, Double> pair : productQuantityPairs.getKey()) {
+                    for (Pair<Integer, Double> pair1 : orderPairs) {
+                        if (pair.getKey() == pair1.getKey()) {
+                            toDelete.add(pair);
+                            break;
                         }
                     }
-                });
-        return true;
+                }
+                productQuantityPairs.getKey().removeAll(toDelete);
+                orderIds.add(makeOrderForStore(this.market.getAreaById(areaId), store, date, uuid, new Pair<>(orderPairs, productQuantityPairs.getValue())));
+            }
+        }
+        return orderIds;
     }
 
     public void performOrderForStore(int uuid, int areaId, int storeId, Date date, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<Integer, Double> productIdToQuantity) {
         // insert order
-        List productIdToQuantityPairsList  =  productIdToQuantity.entrySet().stream().map(entry -> new Pair(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        List productIdToQuantityPairsList = productIdToQuantity.entrySet().stream().map(entry -> new Pair(entry.getKey(), entry.getValue())).collect(Collectors.toList());
         List<Discount.Offer> offers =
-        // Pair<List<Pair<Integer, Double>> , List<Offer>>
-        this.makeOrderForStore(date, uuid, )
+                // Pair<List<Pair<Integer, Double>> , List<Offer>>
+                this.makeOrderForStore(date, uuid, )
         // issue notifications
     }
 

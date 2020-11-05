@@ -57,7 +57,6 @@ public class StoresServlet extends HttpServlet {
             stores = stores.stream().filter(store -> store.getOwnerName().equals(customer.getName())).collect(Collectors.toList());
         }
         List<StoreDTO> storeDTOs = stores.stream().map(StoreDTO::new).collect(Collectors.toList());
-        // Dummy:
         String reply = "";
         Gson gson = new Gson();
         JsonElement temp = gson.toJsonTree(storeDTOs);

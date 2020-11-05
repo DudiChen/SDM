@@ -1,10 +1,16 @@
 package servlet;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import controller.Controller;
+import entity.OrderInvoice;
 import entity.Product;
+import exception.OrderValidationException;
+import servlet.pojo.AreaOrderDTO;
+import servlet.pojo.StoreOrderDTO;
 import servlet.util.ServletUtils;
 
 import javax.servlet.ServletException;
@@ -14,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "AreaOrderServlet", urlPatterns = {"api/areas/orders/approved"})
 public class AreaOrderServlet {
@@ -31,13 +38,23 @@ public class AreaOrderServlet {
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
 
-        boolean isSuccessful = Controller.getInstance().orderFromArea(Integer.parseInt(uuid), Integer.parseInt(areaId), date,productIdToQuantity2);
-        if(isSuccessful){
-            response.getWriter().write("Great Success");
-        }
-        else {
+
+        try {
+            List<Integer> orderIds = Controller.getInstance().orderFromArea(Integer.parseInt(uuid), Integer.parseInt(areaId), date, productIdToQuantity2);
+            List<OrderInvoice> orders = orderIds.stream().map(orderId -> Controller.getInstance().getAreaById(Integer.parseInt(areaId)).getOrderInvoice(orderId)).collect(Collectors.toList());
+            List<AreaOrderDTO> orderDTOs = orders.stream().map(orderInvoice -> new AreaOrderDTO(orderInvoice, Controller.getInstance().getAreaById(Integer.parseInt(areaId)))).collect(Collectors.toList());
+
+            String reply = "";
+            JsonElement temp = gson.toJsonTree(orderDTOs);
+            JsonArray ordersListJSON = temp.getAsJsonArray();
+            JsonObject replyJSON = new JsonObject();
+            replyJSON.add("allOrders", ordersListJSON);
+            reply = String.valueOf(replyJSON);
+            response.getWriter().write(reply);
+        } catch (OrderValidationException e) {
             response.getWriter().write("Error");
+        } finally {
+            response.getWriter().close();
         }
-        response.getWriter().close();
     }
 }

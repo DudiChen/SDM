@@ -27,17 +27,19 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         String areaId = body.get("areaId").getAsString();
         String storeId = body.get("storeId").getAsString();
         String uuid = body.get("uuid").getAsString();
+        String dateString = body.get("date").getAsString();
+        Date date = ServletUtils.formatStringToDate(dateString);
         Gson gson = new Gson();
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
         Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
-        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
+        Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(),
+                discountsMapType);
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
-        // TODO: next method should perform notifications and
-        Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity)
-        Controller.getInstance().performOrderForStore(uuid, areaId, storeId, date, discountNameToProductIdInOffer, productIdToQuantity2);
-//        Controller.getInstance().approveOrderForStore(uuid, areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity2);
+        Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
+        Controller.getInstance().performOrderForStore(Integer.parseInt(uuid), Integer.parseInt(areaId), Integer.parseInt(storeId),
+                date, discountNameToProductIdInOffer, productIdToQuantity2);
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }
