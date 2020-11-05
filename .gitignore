@@ -1,2 +1,3 @@
 cilent/node_modules
-
+.DS_store
+out
