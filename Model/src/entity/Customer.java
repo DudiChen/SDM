@@ -22,6 +22,7 @@ public class Customer {
         this.role = role;
         this.notifications = new ArrayList<>();
         this.location = location;
+        this.transactionHistory = new ArrayList<>();
 //        this.totalOrders = totalOrders;
 //        this.averageOrderCost = averageOrderCost;
 //        this.averageShipmentCost = averageShipmentCost;
