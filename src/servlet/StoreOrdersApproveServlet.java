@@ -23,21 +23,23 @@ import java.util.*;
 @WebServlet(name = "StoreOrdersApproveServlet", urlPatterns = {"/api/areas/stores/orders/approve"})
 public class StoreOrdersApproveServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String areaId = request.getParameter("areaId");
-//        String storeId = request.getParameter("storeId");
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
-        String areaId = body.get("areaId").getAsString();
-        String storeId = body.get("storeId").getAsString();
-        String uuid = body.get("uuid").getAsString();
-        Gson gson = new Gson();
+        int areaId = body.get("areaId").getAsInt();
+        int storeId = body.get("storeId").getAsInt();
+        int uuid = body.get("uuid").getAsInt();
+        // TODO: NOAM: Add date from UI
+        String dateString = body.get("date").getAsString();
+        Date date = ServletUtils.formatStringToDate(dateString);
 
+        Gson gson = new Gson();
         Type discountsMapType = new TypeToken<HashMap<String, ArrayList<Integer>>>() {
         }.getType();
         Type productsMapType = new TypeToken<HashMap<String, Integer>>() {
         }.getType();
         Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsString(), discountsMapType);
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
-        Controller.getInstance().approveOrderForStore(uuid, areaId, storeId, discountNameToProductIdInOffer, productIdToQuantity);
+        // TODO: next method should perform notifications and
+        Controller.getInstance().performOrderForStore(uuid, areaId, storeId, date, discountNameToProductIdInOffer, productIdToQuantity);
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }

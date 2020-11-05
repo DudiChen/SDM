@@ -245,29 +245,29 @@ public class Controller {
 //    TODO::UI: in the Order History, under Orders tab; the Discount offer items are not counted - need to add as "Number of items from Discounts" => use getNumberOfDiscountProducts() & getNumberOfInvoiceProducts().
 //    TODO::UI: Orders does not display customer related data
 //    TODO::UI: On Dynamic Order display; missing prompt to user about order split info before viewing multiple orders
-    private void makeOrderForChosenStore(Date date, Integer customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
-//        StringBuilder err = new StringBuilder();
-//        List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
-//        // validate store coordinate is not the same as customer coordinate
-//        assert false;
-//        if (this.market.getCustomerById(customerId).getLocation().equals(chosenStore.get().getLocation())) {
-//            err.append("cannot make order from same coordinate as store").append(System.lineSeparator());
-//        }
-//        // validate chosen products are sold by the chosen store
-//        for (Pair<Integer, Double> productToQuantity : productQuantityPairsWithOffers.getKey()) {
-//            int productId = productToQuantity.getKey();
-//            if (!chosenStore.get().isProductSold(productId)) {
-//                err.append(market.getProductById(productId).getName()).append(" is not sold by ").append(market.getStoreById(chosenStore.get().getId()).getName()).append(System.lineSeparator());
-//            }
-//        }
-//        if (err.length() > 0) {
-//            throw new OrderValidationException(err.toString());
-//        }
-//        if (productQuantityPairsWithOffers.getKey().size() == 0) {
-//            view.showMainMenu();
-//        }
-//        int orderInvoiceId = market.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, chosenStore.get().getId()));
-//        view.summarizeOrder(market.getOrderInvoice(orderInvoiceId));
+    private void makeOrderForChosenStore(Date date, int customerId, Pair<List<Pair<Integer, Double>>, List<Discount.Offer>> productQuantityPairsWithOffers) throws OrderValidationException {
+        StringBuilder err = new StringBuilder();
+        List<Discount.Offer> chosenOffers = productQuantityPairsWithOffers.getValue();
+        // validate store coordinate is not the same as customer coordinate
+        assert false;
+        if (this.market.getCustomerById(customerId).getLocation().equals(chosenStore.get().getLocation())) {
+            err.append("cannot make order from same coordinate as store").append(System.lineSeparator());
+        }
+        // validate chosen products are sold by the chosen store
+        for (Pair<Integer, Double> productToQuantity : productQuantityPairsWithOffers.getKey()) {
+            int productId = productToQuantity.getKey();
+            if (!chosenStore.get().isProductSold(productId)) {
+                err.append(market.getProductById(productId).getName()).append(" is not sold by ").append(market.getStoreById(chosenStore.get().getId()).getName()).append(System.lineSeparator());
+            }
+        }
+        if (err.length() > 0) {
+            throw new OrderValidationException(err.toString());
+        }
+        if (productQuantityPairsWithOffers.getKey().size() == 0) {
+            view.showMainMenu();
+        }
+        int orderInvoiceId = market.receiveOrder(new Order(customerId, productQuantityPairsWithOffers.getKey(), chosenOffers, this.market.getCustomerById(customerId).getLocation(), date, chosenStore.get().getId()));
+        view.summarizeOrder(market.getOrderInvoice(orderInvoiceId));
 //    }
 //
 //    // TODO :: make an alert when dynamic order is more than 2 stores long
@@ -570,7 +570,6 @@ public class Controller {
                 .map(entry -> new Pair<>(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
         List<Discount> allMatchingDiscounts = this.market.getAreaById(areaId).getStoreById(storeId).getMatchingDiscountsByProductIdQuantityPairs(productIdQuantityPairs);
-        // TODO: DUDI: There was no need to take offers into consideration
         for (String discountName : discountNameToProductIdInOffer.keySet()) {
             OptionalInt firstFoundIndex = IntStream.range(0, allMatchingDiscounts.size()).filter(i -> allMatchingDiscounts.get(i).getName().equals(discountName)).findFirst();
             firstFoundIndex.ifPresent(index -> allMatchingDiscounts.remove(index));
@@ -580,5 +579,12 @@ public class Controller {
 
     public List<Customer> getAllCustomers() {
         return this.market.getAllCustomers();
+    }
+
+    public void performOrderForStore(int uuid, int areaId, int storeId, Date date, Map<String, List<Integer>> discountNameToProductIdInOffer, Map<String, Integer> productIdToQuantity) {
+        // insert order
+
+        this.makeOrderForChosenStore(date, uuid, )
+        // issue notifications
     }
 }
