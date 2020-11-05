@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "SellerNotificationsServlet", urlPatterns = {"api/users/notifications"})
+@WebServlet(name = "SellerNotificationsServlet", urlPatterns = {"/api/users/notifications"})
 public class SellerNotificationsServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int uuid = Integer.parseInt(request.getParameter("uuid"));

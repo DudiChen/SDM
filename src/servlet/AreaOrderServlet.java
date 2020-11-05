@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "AreaOrderServlet", urlPatterns = {"api/areas/orders/approved"})
+@WebServlet(name = "AreaOrderServlet", urlPatterns = {"/api/areas/orders/approved"})
 public class AreaOrderServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObject body = ServletUtils.readRequestBodyAsJSON(request);
