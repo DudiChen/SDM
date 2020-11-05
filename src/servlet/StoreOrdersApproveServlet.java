@@ -40,15 +40,17 @@ public class StoreOrdersApproveServlet extends HttpServlet {
         // TODO: next method should perform notifications and
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
         int orderId = 0;
+        String errorMessage = "";
         try {
             orderId = Controller.getInstance().performOrderForStore(Integer.parseInt(uuid), Integer.parseInt(areaId), Integer.parseInt(storeId), date, discountNameToProductIdInOffer, productIdToQuantity2);
         } catch (OrderValidationException e) {
-            e.printStackTrace();
+            errorMessage = e.getMessage();
         }
         String reply = "";
         JsonObject replyJSON = new JsonObject();
         replyJSON.addProperty("orderId", Integer.toString(orderId));
-        reply = String.valueOf(replyJSON); /
+        replyJSON.addProperty("errorMessage", errorMessage);
+        reply = String.valueOf(replyJSON);
         response.getWriter().write("Great Success");
         response.getWriter().close();
     }

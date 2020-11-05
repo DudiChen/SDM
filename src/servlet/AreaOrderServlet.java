@@ -38,22 +38,23 @@ public class AreaOrderServlet {
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsString(), productsMapType);
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
 
+        String reply = "";
+        JsonObject replyJSON = new JsonObject();
 
         try {
             List<Integer> orderIds = Controller.getInstance().orderFromArea(Integer.parseInt(uuid), Integer.parseInt(areaId), date, productIdToQuantity2);
             List<OrderInvoice> orders = orderIds.stream().map(orderId -> Controller.getInstance().getAreaById(Integer.parseInt(areaId)).getOrderInvoice(orderId)).collect(Collectors.toList());
             List<AreaOrderDTO> orderDTOs = orders.stream().map(orderInvoice -> new AreaOrderDTO(orderInvoice, Controller.getInstance().getAreaById(Integer.parseInt(areaId)))).collect(Collectors.toList());
 
-            String reply = "";
             JsonElement temp = gson.toJsonTree(orderDTOs);
             JsonArray ordersListJSON = temp.getAsJsonArray();
-            JsonObject replyJSON = new JsonObject();
             replyJSON.add("allOrders", ordersListJSON);
+        } catch (OrderValidationException e) {
+            String errorMessage = e.getMessage();
+            replyJSON.addProperty("errorMessage", errorMessage);
+        } finally {
             reply = String.valueOf(replyJSON);
             response.getWriter().write(reply);
-        } catch (OrderValidationException e) {
-            response.getWriter().write("Error");
-        } finally {
             response.getWriter().close();
         }
     }
