@@ -8,7 +8,9 @@ import com.google.gson.reflect.TypeToken;
 import controller.Controller;
 import entity.Discount;
 import entity.OrderInvoice;
+import entity.StoreProduct;
 import servlet.pojo.DiscountDTO;
+import servlet.pojo.ProductInOrderDTO;
 import servlet.pojo.StoreOrderDTO;
 import servlet.util.ServletUtils;
 
@@ -42,8 +44,20 @@ public class StoreOrdersServlet extends HttpServlet {
         Map<String, List<Integer>> discountNameToProductIdInOffer = gson.fromJson(body.get("discounts").getAsJsonObject(), discountsMapType);
         Map<String, Integer> productIdToQuantity = gson.fromJson(body.get("order").getAsJsonObject(), productsMapType);
         Map<Integer, Double> productIdToQuantity2 = ServletUtils.productIdToQuantityWithGramsConsiderationAndStringForIdConsideration(areaId, productIdToQuantity);
-
-        List<Discount> availableDiscounts = Controller.getInstance().getAvailableDiscounts(Integer.parseInt(areaId), Integer.parseInt(storeId), discountNameToProductIdInOffer, productIdToQuantity2);
+        Controller controller = Controller.getInstance();
+        List<ProductInOrderDTO> storeProductsSTOs = productIdToQuantity2.entrySet().stream()
+                .map(entry -> {
+                    final StoreProduct storeProduct = controller.getStoreProductById(Integer.parseInt(areaId), Integer.parseInt(storeId), entry.getKey());
+                    return new ProductInOrderDTO(
+                            Integer.toString(storeProduct.getId()),
+                            storeProduct.getName(),
+                            storeProduct.getPurchaseMethod().toString(),
+                            entry.getValue(),
+                            storeProduct.getPrice(),
+                            entry.getValue() * storeProduct.getPrice()
+                    );
+                }).collect(Collectors.toList());
+        List<Discount> availableDiscounts = controller.getAvailableDiscounts(Integer.parseInt(areaId), Integer.parseInt(storeId), discountNameToProductIdInOffer, productIdToQuantity2);
         JsonObject replyJSON = new JsonObject();
         boolean isValid = true;
         if (availableDiscounts == null) {
@@ -53,6 +67,8 @@ public class StoreOrdersServlet extends HttpServlet {
             String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
             replyJSON.addProperty("discounts", availableDiscountsStr);
         }
+        String productsString = gson.toJson(storeProductsSTOs);
+        replyJSON.addProperty("products", productsString);
         replyJSON.addProperty("isValid", Boolean.toString(isValid));
         String reply = String.valueOf(replyJSON.getAsJsonObject());
         response.getWriter().write(reply);

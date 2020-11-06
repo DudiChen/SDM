@@ -78,4 +78,8 @@ public class Market {
     public Product getAreaProductById(int areaId, int productId) {
         return this.getAreaById(areaId).getProductById(productId);
     }
+
+    public StoreProduct getStoreProductById(int areaId, int storeId, int productId) {
+        return this.idToArea.get(areaId).getStoreById(storeId).getStoreProductById(storeId);
+    }
 }

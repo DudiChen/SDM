@@ -32,5 +32,9 @@ public class StoreProduct {
     {
         return product.getName();
     }
+
+    public Object getPurchaseMethod() {
+        return this.product.getPurchaseMethod();
+    }
 }
 

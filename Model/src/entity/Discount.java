@@ -34,12 +34,12 @@ public class Discount {
     }
 
     public boolean isDiscountMatch(int productId, double quantity) {
-        return productId == this.productIdQuantityPair.getKey() && quantity <= this.productIdQuantityPair.getValue();
+        return productId == this.productIdQuantityPair.getKey() && quantity >= this.productIdQuantityPair.getValue();
     }
 
     public int discountMatchInstances(int productId, double quantity) {
         int result = 0;
-        if (productId == this.productIdQuantityPair.getKey() && quantity <= this.productIdQuantityPair.getValue()) {
+        if (productId == this.productIdQuantityPair.getKey() && quantity >= this.productIdQuantityPair.getValue()) {
             result = (int) (this.productIdQuantityPair.getValue() / quantity);
         }
         return result;

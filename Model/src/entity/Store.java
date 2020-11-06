@@ -228,4 +228,8 @@ public class Store {
     public List<Feedback> getAllFeedbacks() {
         return this.feedbacks;
     }
+
+    public StoreProduct getStoreProductById(int storeId) {
+        return this.stock.getSoldProductById(storeId);
+    }
 }

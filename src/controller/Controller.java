@@ -326,4 +326,8 @@ public class Controller {
     public List<String> getSellerNotifications(int uuid) {
         return this.getCustomerById(uuid).getNotifications();
     }
+
+    public StoreProduct getStoreProductById(int areaId, int storeId, int productId) {
+        return this.market.getStoreProductById(areaId, storeId, productId);
+    }
 }

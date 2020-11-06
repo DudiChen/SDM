@@ -29,4 +29,8 @@ public class Stock {
     public void addSoldProduct(StoreProduct storeProduct) {
         this.soldProducts.put(storeProduct.getId(), storeProduct);
     }
+
+    public StoreProduct getSoldProductById(int storeId) {
+        return this.soldProducts.get(storeId);
+    }
 }
