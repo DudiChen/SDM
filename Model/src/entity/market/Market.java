@@ -58,6 +58,7 @@ public class Market {
 
     public double getAreaAverageProductPrice(int areaId, int productId) {
         return getAreaById(areaId).getAllStores().stream()
+                .filter(store -> store.isProductSold(productId))
                 .map(store -> store.getPriceOfProduct(productId))
                 .mapToDouble(x -> x)
                 .average()

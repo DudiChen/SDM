@@ -34,9 +34,8 @@ public class StoresServlet extends HttpServlet {
         int y = body.get("storeY").getAsInt();
         double ppk = body.get("ppk").getAsDouble();
         Gson gson = new Gson();
-        JsonObject productsInNewStoreJson = body.get("soldProducts").getAsJsonObject();
         // id, price
-        List<ProductInNewStoreDTO> productInNewStoreDTOs = gson.fromJson(productsInNewStoreJson, new TypeToken<ArrayList<ProductInNewStoreDTO>>(){}.getType());
+        List<ProductInNewStoreDTO> productInNewStoreDTOs = gson.fromJson(body.get("soldProducts").getAsJsonArray(), new TypeToken<ArrayList<ProductInNewStoreDTO>>(){}.getType());
         Map<String, Integer> productIdToPriceInNewStore = new HashMap<>();
         for(ProductInNewStoreDTO dto : productInNewStoreDTOs) {
             productIdToPriceInNewStore.put(dto.getId(), dto.getPrice());
