@@ -67,8 +67,8 @@ public class StoreOrdersServlet extends HttpServlet {
             String availableDiscountsStr = gson.toJson(availableDiscountDTOs);
             replyJSON.addProperty("discounts", availableDiscountsStr);
         }
-        String productsString = gson.toJson(storeProductsSTOs);
-        replyJSON.addProperty("products", productsString);
+        JsonElement productsJSON = gson.toJsonTree(storeProductsSTOs);
+        replyJSON.add("products", productsJSON);
         replyJSON.addProperty("isValid", Boolean.toString(isValid));
         String reply = String.valueOf(replyJSON.getAsJsonObject());
         response.getWriter().write(reply);
