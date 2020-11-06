@@ -40,7 +40,7 @@ public class Discount {
     public int discountMatchInstances(int productId, double quantity) {
         int result = 0;
         if (productId == this.productIdQuantityPair.getKey() && quantity >= this.productIdQuantityPair.getValue()) {
-            result = (int) (this.productIdQuantityPair.getValue() / quantity);
+            result = (int) (quantity / (this.productIdQuantityPair.getValue()));
         }
         return result;
     }
